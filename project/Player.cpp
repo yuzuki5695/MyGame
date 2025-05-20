@@ -1,5 +1,8 @@
 #include "Player.h"
 #include<ModelManager.h>
+#ifdef USE_IMGUI
+#include<ImGuiManager.h>
+#endif // USE_IMGUI
 
 using json = nlohmann::json;
 
@@ -16,8 +19,21 @@ void Player::Initialize() {
 }
 
 void Player::Update() {
+
+    if (fige) {
+        UpdateObjectPosition();  // ベジェ曲線に沿って移動
+    }
+
     // プレイヤー更新
     object->Update();
+
+#ifdef USE_IMGUI
+    ImGui::Begin("Player Control");
+    ImGui::Checkbox("Follow Bezier", &fige);
+    ImGui::SliderFloat("Bezier Speed", &speed, 0.001f, 0.1f, "%.3f");
+    ImGui::End();
+#endif // USE_IMGUI
+
 }
 
 void Player::Draw() {

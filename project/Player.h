@@ -30,6 +30,8 @@ public:
 
 	void UpdateObjectPosition();
 
+	bool Getfige() { return fige; }
+
 private:
 
 	// Object3d
@@ -39,4 +41,5 @@ private:
 	float t = 0.0f;
 	float speed = 0.01f; // 移動の速さ
 
+	bool fige = false;
 };
