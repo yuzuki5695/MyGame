@@ -11,11 +11,10 @@ void Player::Initialize() {
     ModelManager::GetInstance()->LoadModel("monsterBallUV.obj");
     
 	// jsonファイルからベジェ曲線の制御点を読み込む
-	bezierPoints = LoadBezierFromJSON("Resources/bezier_export.json");
+	bezierPoints = LoadBezierFromJSON("Resources/bezier.json");
 
     // プレイヤー生成
     object = Object3d::Create("monsterBallUV.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, -1.6f, 0.0f}, {0.0f, 0.0f, 0.0f} }));
-
 }
 
 void Player::Update() {
@@ -30,7 +29,7 @@ void Player::Update() {
 #ifdef USE_IMGUI
     ImGui::Begin("Player Control");
     ImGui::Checkbox("Follow Bezier", &fige);
-    ImGui::SliderFloat("Bezier Speed", &speed, 0.001f, 0.1f, "%.3f");
+    ImGui::SliderFloat("Bezier Speed", &speed, 0.001f, 0.01f, "%.3f");
     ImGui::End();
 #endif // USE_IMGUI
 

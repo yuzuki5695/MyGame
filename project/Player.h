@@ -39,7 +39,7 @@ private:
 	
 	std::vector<BezierPoint> bezierPoints;
 	float t = 0.0f;
-	float speed = 0.01f; // 移動の速さ
+	float speed = 0.001f; // 移動の速さ
 
 	bool fige = false;
 };
