@@ -41,58 +41,24 @@ void GamePlayScene::Initialize() {
     ModelManager::GetInstance()->LoadModel("fence.obj");
     ModelManager::GetInstance()->LoadModel("terrain.obj");
 
-    // 音声ファイルを追加
-    soundData = SoundLoader::GetInstance()->SoundLoadWave("Resources/Alarm01.wav");
-
-    // 音声プレイフラグ
-    soundfige = 0;
-
-    // スプライトの初期化
-    sprite = Sprite::Create("Resources/uvChecker.png", Vector2{ 0.0f,0.0f }, 0.0f, Vector2{ 360.0f,360.0f });
-
     // オブジェクト作成
-    object3d = Object3d::Create("monsterBallUV.obj", Transform({{1.0f, 1.0f, 1.0f}, {0.0f, -1.6f, 0.0f}, {0.0f, 0.0f, 0.0f}}));
+    //object3d = Object3d::Create("monsterBallUV.obj", Transform({{1.0f, 1.0f, 1.0f}, {0.0f, -1.6f, 0.0f}, {0.0f, 0.0f, 0.0f}}));
     grass = Object3d::Create("terrain.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} }));
 
-    // パーティクルグループ生成
-    ParticleManager::GetInstance()->CreateParticleGroup("Particles", "Resources/uvChecker.png", "plane.obj");
-    ParticleManager::GetInstance()->CreateParticleGroup("Circle", "Resources/circle2.png", "plane.obj");
 
-    // 発生
-    emitter = std::make_unique <ParticleEmitter>(
-        Vector3{ 0.0f, 2.0f, 0.0f }, // 位置
-        3.0f,                         // 発生周期 or 寿命（自由に定義可能）
-        0.0f,                         // 経過時間（基本は0から開始）
-        8,                            // 発生数
-        "Particles",                  // パーティクルグループ名
-        Vector3{ 0.0f, 0.0f, 0.0f }  // ← 風
-    );
+	// プレイヤーの初期化
+	player_ = std::make_unique<Player>();
+    player_->Initialize();
 
 }
 
 void GamePlayScene::Update() {
-
-    //if (Input::GetInstance()->Pushkey(DIK_SPACE) && soundfige == 0) {
-    //    soundfige = 1;
-    //}
-
-    //if (soundfige == 1) {
-    //    // 音声再生
-    //    SoundPlayer::GetInstance()->SoundPlayWave(soundData, false);
-    //    soundfige = 2;
-    //}
-
 #pragma region  ImGuiの更新処理開始    
     // object3d
-    object3d->DebugUpdata("Object3d");
     grass->DebugUpdata("Grass");
 
     // Camera
     camera->DebugUpdate();
-
-    ParticleManager::GetInstance()->DebugUpdata();
-
-    emitter->DebugUpdata();
 
 #pragma endregion ImGuiの更新処理終了 
     /*-------------------------------------------*/
@@ -103,20 +69,14 @@ void GamePlayScene::Update() {
 #pragma region 全てのObject3d個々の更新処理
 
     // 更新処理
-    object3d->Update();
-    grass->Update();
+    player_->Update();
 
-    ParticleManager::GetInstance()->Update();
-    emitter->Update();
+
+    grass->Update();
 
 #pragma endregion 全てのObject3d個々の更新処理
 
 #pragma region 全てのSprite個々の更新処理
-
-    
-    // 更新処理
-   // sprite->Update();
-
 
 
 #pragma endregion 全てのSprite個々の更新処理
@@ -133,8 +93,10 @@ void GamePlayScene::Draw() {
     Object3dCommon::GetInstance()->Commondrawing();
 
 
+    player_->Draw();
+
+
     grass->Draw();
-    object3d->Draw();
 
     // パーティクルの描画準備。パーティクルの描画に共通のグラフィックスコマンドを積む 
     ParticleCommon::GetInstance()->Commondrawing();
@@ -146,8 +108,6 @@ void GamePlayScene::Draw() {
 #pragma region 全てのSprite個々の描画処理
     // Spriteの描画準備。Spriteの描画に共通のグラフィックスコマンドを積む
     SpriteCommon::GetInstance()->Commondrawing();
-    
-    //sprite->Draw();
 
 #pragma endregion 全てのSprite個々の描画処理
 }

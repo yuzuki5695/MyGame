@@ -6,6 +6,8 @@
 #include<BaseScene.h>
 #include <ParticleEmitter.h>
 
+#include"Player.h"
+
 // ゲームプレイシーン
 class GamePlayScene : public BaseScene
 {
@@ -26,18 +28,12 @@ private: // メンバ変数
     Vector3 Cameraposition;
     Vector3 Camerarotation;
     // Sprite
-    std::unique_ptr<Sprite> sprite = nullptr;
+   // std::unique_ptr<Sprite> sprite = nullptr;
     // Object3d
-    std::unique_ptr <Object3d> object3d = nullptr;
+   // std::unique_ptr <Object3d> object3d = nullptr;
     // 地面
     std::unique_ptr <Object3d> grass = nullptr;
 
-    // 音声ファイル
-    SoundData soundData;
-    // 音声プレイフラグ
-    uint32_t soundfige;
 
-    // エミッター生成
-    std::unique_ptr <ParticleEmitter> emitter;
-    Vector3 windPower;
+    std::unique_ptr <Player> player_;
 };
