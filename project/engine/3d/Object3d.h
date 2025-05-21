@@ -106,5 +106,8 @@ public:
 	void SetScale(const Vector3& scale) { this->transform_.scale = scale; }
 	void SetRotate(const Vector3& rotate) { this->transform_.rotate = rotate; }
 	void SetTranslate(const Vector3& translate) { this->transform_.translate = translate; }
+	void SetTranslateX(float x) { transform_.translate.x = x; }
+	void SetTranslateY(float y) { transform_.translate.y = y; }
+	void SetTranslateZ(float z) { transform_.translate.z = z; }
 	void SetCamera(Camera* camera) { this->camera = camera; }
 };

@@ -41,8 +41,7 @@ void GamePlayScene::Initialize() {
     ModelManager::GetInstance()->LoadModel("terrain.obj");
 
     // オブジェクト作成
-    //object3d = Object3d::Create("monsterBallUV.obj", Transform({{1.0f, 1.0f, 1.0f}, {0.0f, -1.6f, 0.0f}, {0.0f, 0.0f, 0.0f}}));
-    grass = Object3d::Create("terrain.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 30.0f} }));
+    grass = Object3d::Create("terrain.obj", Transform({ {1.0f, 1.0f, 10.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 70.0f} }));
 
 
 	// プレイヤーの初期化

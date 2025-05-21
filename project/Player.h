@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include<Transform.h>
+#include "Bullet.h"
 
 class Player
 {
@@ -16,6 +17,8 @@ public:
 	};
 
 public:
+	~Player();
+
 	// 初期化
 	void Initialize();
 	// 毎フレーム更新
@@ -32,6 +35,8 @@ public:
 
 	bool Getfige() { return fige; }
 
+	void attachBullet();
+
 private:
 
 	// Object3d
@@ -39,7 +44,7 @@ private:
 	
 	std::vector<BezierPoint> bezierPoints;
 	float t = 0.0f;
-	float speed = 0.001f; // 移動の速さ
+	float speed = 0.0001f; // 移動の速さ
 
 	bool fige = false;
 
@@ -48,7 +53,17 @@ private:
 
 	Vector3 moveDelta = { 0.0f, 0.0f, 0.0f };
 
+
+	std::vector<Bullet*> bullets_;
+	float bulletTimer_ = 0.0f;                   // 経過時間
+	const float bulletInterval_ = 0.5f;         // 30秒ごとに弾を撃てる
+	bool canShoot_ = true;                       // 弾を撃てるかどうか
 public: // メンバ関数
 	Object3d* GetObject3d() { return object.get(); }
+	Vector3 GetForwardDirection() const {
+		// プレイヤーの正面方向ベクトル（例：Y軸方向に前向きの場合）
+		// 必要に応じて回転を考慮したベクトル計算に変えてください
+		return Vector3(0.0f, 0.0f, 1.0f);
+	}
 
 };

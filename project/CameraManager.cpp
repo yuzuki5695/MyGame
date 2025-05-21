@@ -27,7 +27,7 @@ void CameraManager::Finalize() {
 void CameraManager::Initialize() {
     // 初期化時
     defaultCamera_ = new Camera(); 
-    defaultCamera_->SetTranslate(Vector3(0.0f, 0.0f, -30.0f));
+    defaultCamera_->SetTranslate(Vector3(0.0f, 3.0f, -30.0f));
     defaultCamera_->SetRotate(Vector3(0.0f, 0.0f, 0.0f));
     Object3dCommon::GetInstance()->SetDefaultCamera(defaultCamera_);
     ParticleCommon::GetInstance()->SetDefaultCamera(defaultCamera_);
@@ -43,7 +43,7 @@ void CameraManager::Update() {
         const Vector3& targetPos = target_->GetTranslate();
 
         // 追従カメラの位置をターゲットの後方・上方に設定（例）
-        Vector3 offset(0.0f, 0.0f, -20.0f);
+        Vector3 offset(0.0f, 3.0f, -30.0f);
         Vector3 cameraPos = targetPos + offset;
 
         followCamera_->SetTranslate(cameraPos);
