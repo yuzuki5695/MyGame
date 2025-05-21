@@ -52,6 +52,8 @@ void GamePlayScene::Initialize() {
     CameraManager::GetInstance()->ToggleCameraMode(true);  // 追従カメラを有効にする
 
 
+	enemy_ = std::make_unique<Enemy>();
+	enemy_->Initialize();
 }
 
 void GamePlayScene::Update() {
@@ -74,13 +76,27 @@ void GamePlayScene::Update() {
 
 
 #pragma region 全てのObject3d個々の更新処理
+    //for (Bullet* b : bullets_) {
+    //    b->Update();
+    //}
+
+    //for (Enemy* e : enemys_) {
+    //    e->Update();
+    //}
+
+    //CheckBulletEnemyCollisions();  // 当たり判定
+    //CleanupInactiveObjects();      // 不要なオブジェクト削除
 
     // 更新処理
+    
+    // プレイヤー
     player_->Update();
+
+    // 敵
+    enemy_->Update();
 
 
     grass->Update();
-
 #pragma endregion 全てのObject3d個々の更新処理
 
 #pragma region 全てのSprite個々の更新処理
@@ -99,8 +115,11 @@ void GamePlayScene::Draw() {
     // 3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
     Object3dCommon::GetInstance()->Commondrawing();
 
-
+    // プレイヤー
     player_->Draw();
+
+    // 敵
+    enemy_->Draw();
 
 
     grass->Draw();
@@ -118,3 +137,44 @@ void GamePlayScene::Draw() {
 
 #pragma endregion 全てのSprite個々の描画処理
 }
+//
+//void GamePlayScene::CheckBulletEnemyCollisions() {
+//    for (Bullet* bullet : bullets_) {
+//        if (!bullet->IsActive()) continue;
+//
+//        for (Enemy* enemy : enemys_) {
+//            if (!enemy->IsActive()) continue;
+//
+//            float dist = Length(bullet->GetPosition() - enemy->GetPosition());
+//            float collisionDist = bullet->GetRadius() + enemy->GetRadius();
+//
+//            if (dist <= collisionDist) {
+//                bullet->SetInactive(); // 弾を非アクティブに
+//                enemy->SetInactive();  // 敵も非アクティブに
+//                break; // 一発で1体だけ倒す場合はbreak
+//            }
+//        }
+//    }
+//}
+//
+//void GamePlayScene::CleanupInactiveObjects() {
+//    // bullets_ を非アクティブなものだけ削除
+//    bullets_.erase(std::remove_if(bullets_.begin(), bullets_.end(),
+//        [](Bullet* b) {
+//            if (!b->IsActive()) {
+//                delete b;
+//                return true;
+//            }
+//            return false;
+//        }), bullets_.end());
+//
+//    // enemys_ も同様に
+//    enemys_.erase(std::remove_if(enemys_.begin(), enemys_.end(),
+//        [](Enemy* e) {
+//            if (!e->IsActive()) {
+//                delete e;
+//                return true;
+//            }
+//            return false;
+//        }), enemys_.end());
+//}
