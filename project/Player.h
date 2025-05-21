@@ -37,6 +37,10 @@ public:
 
 	void attachBullet();
 
+
+	// 弾リストを取得
+	const std::vector<Bullet*>& GetBullets() const { return bullets_; }
+
 private:
 
 	// Object3d
@@ -44,7 +48,7 @@ private:
 	
 	std::vector<BezierPoint> bezierPoints;
 	float t = 0.0f;
-	float speed = 0.0001f; // 移動の速さ
+	float speed = 0.001f; // 移動の速さ
 
 	bool fige = false;
 
@@ -65,5 +69,5 @@ public: // メンバ関数
 		// 必要に応じて回転を考慮したベクトル計算に変えてください
 		return Vector3(0.0f, 0.0f, 1.0f);
 	}
-
+	std::vector<Bullet*>& GetBullet() { return bullets_; } // 非const版
 };

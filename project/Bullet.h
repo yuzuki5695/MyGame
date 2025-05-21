@@ -11,13 +11,18 @@ public:
     void Update();
     void Draw();
 
-    bool IsActive() const { return active_; }
-    void SetActive(bool active) { active_ = active; }
-    float GetRadius() const { return radius_; }
 private:
     std::unique_ptr <Object3d> object_ = nullptr;
     Vector3 position_;
     Vector3 velocity_;
     float radius_ = 0.5f; // 弾の半径
     bool active_ = false;
+public:
+    bool IsActive() const { return active_; }
+    void SetActive(bool active) { active_ = active; }
+    float GetRadius() const { return radius_; }
+
+    void SetInactive() { active_ = false; }
+    
+    const Vector3& GetPosition() const { return position_; }
 };

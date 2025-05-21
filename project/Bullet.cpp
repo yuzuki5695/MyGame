@@ -35,7 +35,7 @@ void Bullet::Update() {
     //object_->SetTranslateZ(position_.z);
     
     // ここは必要に応じて調整
-    if (position_.z > 100.0f) {
+    if (position_.z > 300.0f) {
         active_ = false;
     }
     // 更新処理

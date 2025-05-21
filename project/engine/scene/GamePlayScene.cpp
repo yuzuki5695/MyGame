@@ -39,6 +39,7 @@ void GamePlayScene::Initialize() {
     ModelManager::GetInstance()->LoadModel("monsterBallUV.obj");
     ModelManager::GetInstance()->LoadModel("fence.obj");
     ModelManager::GetInstance()->LoadModel("terrain.obj");
+    ModelManager::GetInstance()->LoadModel("uvChecker.obj");
 
     // オブジェクト作成
     grass = Object3d::Create("terrain.obj", Transform({ {1.0f, 1.0f, 10.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 70.0f} }));
@@ -52,8 +53,12 @@ void GamePlayScene::Initialize() {
     CameraManager::GetInstance()->ToggleCameraMode(true);  // 追従カメラを有効にする
 
 
-	enemy_ = std::make_unique<Enemy>();
-	enemy_->Initialize();
+    // 敵を複数体生成
+    for (int i = 0; i < 10; ++i) {
+        auto enemy = std::make_unique<Enemy>();
+        enemy->Initialize();
+        enemys_.push_back(std::move(enemy));
+    }
 }
 
 void GamePlayScene::Update() {
@@ -64,6 +69,18 @@ void GamePlayScene::Update() {
 	CameraManager::GetInstance()->DrawImGui();
     //camera->DebugUpdate();
 
+
+#ifdef USE_IMGUI
+    ImGui::Begin("Enemys");
+    int index = 0;
+    for (const auto& enemy : enemys_) {
+        std::string label = "Enemy " + std::to_string(index) + " Active";
+        bool isActive = enemy->IsActive(); // 値を一時変数にコピー
+        ImGui::Text("%s: %s", label.c_str(), isActive ? "true" : "false");
+        index++;
+    }
+    ImGui::End();
+#endif // USE_IMGUI
 #pragma endregion ImGuiの更新処理終了 
     /*-------------------------------------------*/
     /*--------------Cameraの更新処理---------------*/
@@ -84,17 +101,20 @@ void GamePlayScene::Update() {
     //    e->Update();
     //}
 
-    //CheckBulletEnemyCollisions();  // 当たり判定
-    //CleanupInactiveObjects();      // 不要なオブジェクト削除
-
     // 更新処理
     
     // プレイヤー
     player_->Update();
 
     // 敵
-    enemy_->Update();
+    for (auto& enemy : enemys_) {
+        if (enemy->IsActive()) {
+            enemy->Update();
+        }
+    }
 
+    CheckBulletEnemyCollisions();  // 当たり判定
+    CleanupInactiveObjects();      // 不要なオブジェクト削除
 
     grass->Update();
 #pragma endregion 全てのObject3d個々の更新処理
@@ -119,7 +139,11 @@ void GamePlayScene::Draw() {
     player_->Draw();
 
     // 敵
-    enemy_->Draw();
+    for (auto& enemy : enemys_) {
+        if (enemy->IsActive()) {
+			enemy->Draw();
+        }
+    }
 
 
     grass->Draw();
@@ -137,44 +161,55 @@ void GamePlayScene::Draw() {
 
 #pragma endregion 全てのSprite個々の描画処理
 }
-//
-//void GamePlayScene::CheckBulletEnemyCollisions() {
-//    for (Bullet* bullet : bullets_) {
-//        if (!bullet->IsActive()) continue;
-//
-//        for (Enemy* enemy : enemys_) {
-//            if (!enemy->IsActive()) continue;
-//
-//            float dist = Length(bullet->GetPosition() - enemy->GetPosition());
-//            float collisionDist = bullet->GetRadius() + enemy->GetRadius();
-//
-//            if (dist <= collisionDist) {
-//                bullet->SetInactive(); // 弾を非アクティブに
-//                enemy->SetInactive();  // 敵も非アクティブに
-//                break; // 一発で1体だけ倒す場合はbreak
-//            }
-//        }
-//    }
-//}
-//
-//void GamePlayScene::CleanupInactiveObjects() {
-//    // bullets_ を非アクティブなものだけ削除
-//    bullets_.erase(std::remove_if(bullets_.begin(), bullets_.end(),
-//        [](Bullet* b) {
-//            if (!b->IsActive()) {
-//                delete b;
-//                return true;
-//            }
-//            return false;
-//        }), bullets_.end());
-//
-//    // enemys_ も同様に
-//    enemys_.erase(std::remove_if(enemys_.begin(), enemys_.end(),
-//        [](Enemy* e) {
-//            if (!e->IsActive()) {
-//                delete e;
-//                return true;
-//            }
-//            return false;
-//        }), enemys_.end());
-//}
+
+void GamePlayScene::CheckBulletEnemyCollisions() {
+
+    // 自弾リストの取得
+    const std::vector<Bullet*>& bullets_ = player_->GetBullets();
+
+
+    for (Bullet* bullet : bullets_) {
+        if (!bullet->IsActive()) continue;
+
+        for (const auto& enemy : enemys_) {
+            if (!enemy->IsActive()) continue;
+
+            //float dist = Length(bullet->GetPosition() - enemy->GetPosition());
+            Vector3 delta = {
+                bullet->GetPosition().x - enemy->GetPosition().x
+                , bullet->GetPosition().y - enemy->GetPosition().y
+                , bullet->GetPosition().z - enemy->GetPosition().z
+            };
+            float dist = Length(delta);
+
+            float collisionDist = bullet->GetRadius() + enemy->GetRadius();
+
+            if (dist <= collisionDist) {
+                bullet->SetInactive(); // 弾を非アクティブに
+                enemy->SetInactive();  // 敵も非アクティブに
+                break; // 一発で1体だけ倒す場合はbreak
+            }
+        }
+    }
+}
+
+void GamePlayScene::CleanupInactiveObjects() {
+    // 自弾リストの取得
+    std::vector<Bullet*>& bullets_ = player_->GetBullet();
+
+    // bullets_ を非アクティブなものだけ削除
+    bullets_.erase(std::remove_if(bullets_.begin(), bullets_.end(),
+        [](Bullet* b) {
+            if (!b->IsActive()) {
+                delete b;
+                return true;
+            }
+            return false;
+        }), bullets_.end());
+
+    enemys_.erase(std::remove_if(enemys_.begin(), enemys_.end(),
+        [](const std::unique_ptr<Enemy>& e) {
+            return !e->IsActive(); // unique_ptr の所有権は move されるので delete は不要
+        }), enemys_.end());
+
+}
