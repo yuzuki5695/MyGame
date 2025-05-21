@@ -28,7 +28,7 @@ public:
 	
 	Vector3 BezierInterpolate(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float t);
 
-	void UpdateObjectPosition();
+	Vector3 UpdateObjectPosition();
 
 	bool Getfige() { return fige; }
 
@@ -42,4 +42,13 @@ private:
 	float speed = 0.001f; // 移動の速さ
 
 	bool fige = false;
+
+	Transform transform{};
+	Vector3 moveOffset;
+
+	Vector3 moveDelta = { 0.0f, 0.0f, 0.0f };
+
+public: // メンバ関数
+	Object3d* GetObject3d() { return object.get(); }
+
 };

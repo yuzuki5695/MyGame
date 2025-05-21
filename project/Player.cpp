@@ -3,6 +3,7 @@
 #ifdef USE_IMGUI
 #include<ImGuiManager.h>
 #endif // USE_IMGUI
+#include<Input.h>
 
 using json = nlohmann::json;
 
@@ -10,19 +11,40 @@ void Player::Initialize() {
 
     ModelManager::GetInstance()->LoadModel("monsterBallUV.obj");
     
+	transform = { {1.0f, 1.0f, 1.0f}, {0.0f, -1.6f, 0.0f}, {0.0f, 0.0f, 0.0f} };
+
 	// jsonファイルからベジェ曲線の制御点を読み込む
 	bezierPoints = LoadBezierFromJSON("Resources/bezier.json");
 
     // プレイヤー生成
-    object = Object3d::Create("monsterBallUV.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, -1.6f, 0.0f}, {0.0f, 0.0f, 0.0f} }));
+    object = Object3d::Create("monsterBallUV.obj", transform);
 }
 
 void Player::Update() {
+    moveDelta = Vector3(0.0f, 0.0f, 0.0f);
+    // キー入力でmoveDeltaに1フレーム分の移動量加算
+    if (Input::GetInstance()->Pushkey(DIK_A)) moveDelta.x -= 0.1f;
+    if (Input::GetInstance()->Pushkey(DIK_D)) moveDelta.x += 0.1f;
+    if (Input::GetInstance()->Pushkey(DIK_W)) moveDelta.y += 0.1f;
+    if (Input::GetInstance()->Pushkey(DIK_S)) moveDelta.y -= 0.1f;
 
     if (fige) {
-        UpdateObjectPosition();  // ベジェ曲線に沿って移動
+        // ベジェ曲線の位置を取得
+        Vector3 bezierPos = UpdateObjectPosition(); // UpdateObjectPositionを変更してVector3返すようにする
+        // キー移動を累積するための変数を用意（例: moveOffset）
+        moveOffset = moveOffset + moveDelta;
+
+        // ベジェ曲線位置 + キー操作の移動量 を合成
+        transform.translate = bezierPos + moveOffset;
+    } else {
+        // ベジェ曲線移動OFFのときはキー操作のみ
+        transform.translate = transform.translate + moveDelta;
     }
 
+    // 移動後の位置をObjectに反映
+    object->SetTranslate(transform.translate);
+    object->SetRotate(transform.rotate);
+    object->SetScale(transform.scale);
     // プレイヤー更新
     object->Update();
 
@@ -30,6 +52,9 @@ void Player::Update() {
     ImGui::Begin("Player Control");
     ImGui::Checkbox("Follow Bezier", &fige);
     ImGui::SliderFloat("Bezier Speed", &speed, 0.001f, 0.01f, "%.3f");
+    ImGui::DragFloat3("Translate", &transform.translate.x, 0.01f);
+    ImGui::DragFloat3("Rotate", &transform.rotate.x, 0.01f);
+    ImGui::DragFloat3("Scale", &transform.scale.x, 0.01f);
     ImGui::End();
 #endif // USE_IMGUI
 
@@ -91,14 +116,16 @@ Vector3 Player::BezierInterpolate(const Vector3& p0, const Vector3& p1, const Ve
 }
 
 // 毎フレーム呼ばれる関数内など
-void Player::UpdateObjectPosition() {
+Vector3 Player::UpdateObjectPosition() {
+    Vector3 Position{};
+
     int segmentIndex = 0; // 今は1つだけと仮定、複数ならループ管理
 
     if (segmentIndex + 1 < bezierPoints.size()) {
         const BezierPoint& start = bezierPoints[segmentIndex];
         const BezierPoint& end = bezierPoints[segmentIndex + 1];
 
-        Vector3 pos = BezierInterpolate(
+        Position = BezierInterpolate(
             start.controlPoint,
             start.handleRight,
             end.handleLeft,
@@ -106,12 +133,11 @@ void Player::UpdateObjectPosition() {
             t
         );
 
-        object->SetTranslate(pos); // 実際のオブジェクトに位置をセット
-
         t += speed;
         if (t > 1.0f) {
             t = 0.0f;
-            segmentIndex++; // 次のセグメントへ
+            segmentIndex++;
         }
     }
+    return Position; // ベジェ曲線の終点など適宜返す
 }

@@ -114,7 +114,10 @@
     <ClCompile Include="engine\base\WinApp.cpp">
       <Filter>ソースファイル\engine\base</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Player.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\scene\AbstractSceneFactory.h">
@@ -231,8 +234,13 @@
     <ClInclude Include="engine\base\WinApp.h">
       <Filter>ヘッダーファイル\engine\math</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="json.hpp" />
+    <ClInclude Include="json.hpp">
+      <Filter>リソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Object3d.hlsli">
@@ -243,6 +251,9 @@
     </None>
     <None Include="Resources\shaders\Sprite.hlsli">
       <Filter>リソース ファイル\shaders</Filter>
+    </None>
+    <None Include="Resources\bezier.json">
+      <Filter>リソース ファイル</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
