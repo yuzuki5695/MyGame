@@ -27,41 +27,45 @@ void CameraManager::Finalize() {
 void CameraManager::Initialize() {
     // 初期化時
     defaultCamera_ = new Camera(); 
-    defaultCamera_->SetTranslate(Vector3(0.0f, 3.0f, -15.0f));
-    defaultCamera_->SetRotate(Vector3(0.1f, 0.0f, 0.0f));
+    defaultCamera_->SetTranslate(Vector3(0.0f, 0.0f, -30.0f));
+    defaultCamera_->SetRotate(Vector3(0.0f, 0.0f, 0.0f));
     Object3dCommon::GetInstance()->SetDefaultCamera(defaultCamera_);
     ParticleCommon::GetInstance()->SetDefaultCamera(defaultCamera_);
 
     followCamera_ = new Camera();
-    // 追従カメラの初期位置は例えばターゲットの後ろ少し上に設定
-    followCamera_->SetTranslate(Vector3(0, 5, -10));
-    followCamera_->SetRotate(Vector3(0, 0, 0));
 }
 
 void CameraManager::Update() {
+
+    // 追従カメラの更新（ターゲットが設定されていて、追従フラグが有効なとき）
     if (useFollowCamera_ && target_) {
-        // 追従カメラの位置をターゲットの位置＋オフセットにする例
-        Vector3 targetPos = target_->GetTranslate();
-        Vector3 cameraPos = targetPos + Vector3(0, 5, -10); // 高さ5、後方10に追従
+        // ターゲットのワールド座標を取得
+        const Vector3& targetPos = target_->GetTranslate();
+
+        // 追従カメラの位置をターゲットの後方・上方に設定（例）
+        Vector3 offset(0.0f, 0.0f, -20.0f);
+        Vector3 cameraPos = targetPos + offset;
+
         followCamera_->SetTranslate(cameraPos);
 
-        // ターゲットの方向を見るように回転を設定（簡易版）
-        Vector3 dir = {
-            targetPos.x - cameraPos.x, 
-            targetPos.y - cameraPos.y, 
-            targetPos.z - cameraPos.z 
-        };
-        dir = Normalize(dir);
-        float yaw = atan2f(dir.x, dir.z);    // Y軸回転（水平回転）
-        float pitch = asinf(dir.y);          // X軸回転（上下）
-        followCamera_->SetRotate(Vector3(pitch, yaw, 0));
+        // 方向をターゲットに向ける（ここではY軸固定の簡易的な実装）
+        Vector3 toTarget = { targetPos.x - cameraPos.x, targetPos.y - cameraPos.y , targetPos.z - cameraPos.z};
+        float angleY = std::atan2(toTarget.x, toTarget.z);
+        followCamera_->SetRotate(Vector3(0.0f, angleY, 0.0f));
 
         followCamera_->Update();
-
     } else {
-        // 固定カメラの更新
+        // デフォルトカメラの更新
         defaultCamera_->Update();
+    }
 
+    // 共通で使うカメラを更新（描画に使うカメラを切り替え）
+    if (useFollowCamera_) {
+        Object3dCommon::GetInstance()->SetDefaultCamera(followCamera_);
+        ParticleCommon::GetInstance()->SetDefaultCamera(followCamera_);
+    } else {
+        Object3dCommon::GetInstance()->SetDefaultCamera(defaultCamera_);
+        ParticleCommon::GetInstance()->SetDefaultCamera(defaultCamera_);
     }
 }
 
@@ -78,7 +82,9 @@ void CameraManager::DrawImGui() {
     ImGui::Begin("CameraManager");
     if (ImGui::Checkbox("Follow Camera Mode", &currentMode)) {
         ToggleCameraMode(currentMode);
-    }
+    };
+    ImGui::DragFloat3("Follow", &followCamera_->GetTranslate().x, 0.01f);
+    ImGui::DragFloat3("Default", &defaultCamera_->GetTranslate().x, 0.01f);
 	ImGui::End();
 #endif // USE_IMGUI
 }

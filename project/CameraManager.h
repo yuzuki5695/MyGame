@@ -34,4 +34,5 @@ public: // メンバ関数
     // 追従対象をセット（nullptrなら追従なし）
     void SetTarget(Object3d* target);
 	Camera* GetFollowCamera() { return followCamera_; } // 追従カメラ取得
+    Camera* GetActiveCamera() { return useFollowCamera_ ? followCamera_ : defaultCamera_; }
 };

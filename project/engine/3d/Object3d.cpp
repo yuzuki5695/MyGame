@@ -9,6 +9,7 @@
 #include<ImGuiManager.h>
 #endif // USE_IMGUI
 #include <numbers>
+#include <CameraManager.h>
 
 using namespace MatrixVector;
 
@@ -33,18 +34,22 @@ void Object3d::Initialize(Object3dCommon* object3dCommon) {
 void Object3d::Update() {
     // ワールド行列の作成
     Matrix4x4 worldMatrix = MakeAftineMatrix(transform_.scale, transform_.rotate, transform_.translate);
+    // カメラを CameraManager 経由で取得
+    Camera* activeCamera = CameraManager::GetInstance()->GetActiveCamera();
     // ワールド・ビュー・プロジェクション行列
     Matrix4x4 worldViewProjectionMatrix;
-    if (camera) {
-        const Matrix4x4& viewProjectionMatrix = camera->GetViewProjectionMatrix();
+    if (activeCamera) {
+        const Matrix4x4& viewProjectionMatrix = activeCamera->GetViewProjectionMatrix();
         worldViewProjectionMatrix = Multiply(worldMatrix, viewProjectionMatrix);
-        // ✅ カメラのワールド座標をGPU用に渡す
-        cameraForGPUData->worldPosition = camera->GetTranslate();
+
+        // カメラのワールド座標をGPU用に渡す
+        cameraForGPUData->worldPosition = activeCamera->GetTranslate();
     } else {
         worldViewProjectionMatrix = worldMatrix;
         // カメラがない場合もデフォルト位置にしておく
         cameraForGPUData->worldPosition = { 0.0f, 0.0f, -1000.0f };
     }
+
     transformationMatrixData->WVP = worldViewProjectionMatrix;
     transformationMatrixData->World = worldMatrix;
     // WorldInverseTranspose行列を再計算

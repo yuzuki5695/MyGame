@@ -30,6 +30,7 @@ public:
 	const Matrix4x4& GetProjectionMatrix() const { return projectionMatrix; }
 	const Matrix4x4& GetViewProjectionMatrix() const { return ViewProjectionMatrix; }
 	const Vector3& GetRotate() const { return transform.rotate; }
+	Vector3& GetTranslate() { return transform.translate; }            // 書き換え用
 	const Vector3& GetTranslate() const { return transform.translate; }
 
 	// setter

@@ -7,6 +7,7 @@
 #include <ParticleEmitter.h>
 
 #include"Player.h"
+#include <CameraManager.h>
 
 // ゲームプレイシーン
 class GamePlayScene : public BaseScene
@@ -24,9 +25,9 @@ private: // メンバ変数
     // オブジェクトデータ
     // camera 
     std::unique_ptr <Camera> camera = nullptr;
-    //// カメラの現在の位置と回転を取得
-    Vector3 Cameraposition;
-    Vector3 Camerarotation;
+    ////// カメラの現在の位置と回転を取得
+    //Vector3 Cameraposition;
+    //Vector3 Camerarotation;
     // Sprite
    // std::unique_ptr<Sprite> sprite = nullptr;
     // Object3d
@@ -36,4 +37,5 @@ private: // メンバ変数
 
 
     std::unique_ptr <Player> player_;
+
 };
