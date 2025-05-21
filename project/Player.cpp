@@ -9,7 +9,7 @@ using json = nlohmann::json;
 
 void Player::Initialize() {
 
-    ModelManager::GetInstance()->LoadModel("monsterBallUV.obj");
+    ModelManager::GetInstance()->LoadModel("uvChecker.obj");
     
 	transform = { {1.0f, 1.0f, 1.0f}, {0.0f, -1.6f, 0.0f}, {0.0f, 0.0f, 0.0f} };
 
@@ -17,7 +17,7 @@ void Player::Initialize() {
 	bezierPoints = LoadBezierFromJSON("Resources/bezier.json");
 
     // プレイヤー生成
-    object = Object3d::Create("monsterBallUV.obj", transform);
+    object = Object3d::Create("uvChecker.obj", transform);
 }
 
 void Player::Update() {
