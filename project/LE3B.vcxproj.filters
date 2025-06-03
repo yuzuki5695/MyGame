@@ -72,15 +72,6 @@
     <ClCompile Include="engine\3d\Object3dCommon.cpp">
       <Filter>ソースファイル\engine\3d</Filter>
     </ClCompile>
-    <ClCompile Include="engine\3d\ParticleCommon.cpp">
-      <Filter>ソースファイル\engine\3d</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\3d\ParticleEmitter.cpp">
-      <Filter>ソースファイル\engine\3d</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\3d\ParticleManager.cpp">
-      <Filter>ソースファイル\engine\3d</Filter>
-    </ClCompile>
     <ClCompile Include="engine\scene\SceneFactory.cpp">
       <Filter>ソースファイル\engine\scene</Filter>
     </ClCompile>
@@ -113,6 +104,21 @@
     </ClCompile>
     <ClCompile Include="engine\base\WinApp.cpp">
       <Filter>ソースファイル\engine\base</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\Particle\ParticleModel.cpp">
+      <Filter>ソースファイル\engine\3d\particle</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\Particle\ParticleCommon.cpp">
+      <Filter>ソースファイル\engine\3d\particle</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\Particle\ParticleEmitter.cpp">
+      <Filter>ソースファイル\engine\3d\particle</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\Particle\ParticleManager.cpp">
+      <Filter>ソースファイル\engine\3d\particle</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\math\PrimitiveGenerator.cpp">
+      <Filter>ソースファイル\engine\math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -167,15 +173,6 @@
     <ClInclude Include="engine\3d\Object3dCommon.h">
       <Filter>ヘッダーファイル\engine\3d</Filter>
     </ClInclude>
-    <ClInclude Include="engine\3d\ParticleCommon.h">
-      <Filter>ヘッダーファイル\engine\3d</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\3d\ParticleEmitter.h">
-      <Filter>ヘッダーファイル\engine\3d</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\3d\ParticleManager.h">
-      <Filter>ヘッダーファイル\engine\3d</Filter>
-    </ClInclude>
     <ClInclude Include="engine\base\ResourceObject.h">
       <Filter>ヘッダーファイル\engine\base</Filter>
     </ClInclude>
@@ -228,6 +225,33 @@
       <Filter>ヘッダーファイル\engine\math</Filter>
     </ClInclude>
     <ClInclude Include="engine\base\WinApp.h">
+      <Filter>ヘッダーファイル\engine\math</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\Particle\ParticleModel.h">
+      <Filter>ソースファイル\engine\3d\particle</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\Particle\ParticleEmitter.h">
+      <Filter>ソースファイル\engine\3d\particle</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\Particle\ParticleCommon.h">
+      <Filter>ソースファイル\engine\3d\particle</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\Particle\ParticleManager.h">
+      <Filter>ソースファイル\engine\3d\particle</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Material.h">
+      <Filter>ヘッダーファイル\engine\math</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\MaterialDate.h">
+      <Filter>ヘッダーファイル\engine\math</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\ModelDate.h">
+      <Filter>ヘッダーファイル\engine\math</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\PrimitiveGenerator.h">
+      <Filter>ヘッダーファイル\engine\math</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Vertex.h">
       <Filter>ヘッダーファイル\engine\math</Filter>
     </ClInclude>
   </ItemGroup>
@@ -308,6 +332,9 @@
     </Filter>
     <Filter Include="ソースファイル\engine\math">
       <UniqueIdentifier>{fece5090-3523-48fa-8913-5fd562439285}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\engine\3d\particle">
+      <UniqueIdentifier>{4370b318-81cc-4483-affd-5f7615389bee}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -64,7 +64,7 @@
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\io;$(ProjectDir)engine\math;$(ProjectDir)engine\scene;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\io;$(ProjectDir)engine\math;$(ProjectDir)engine\scene;$(ProjectDir)engine\3d\Particle;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -87,7 +87,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\io;$(ProjectDir)engine\math;$(ProjectDir)engine\scene;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\io;$(ProjectDir)engine\math;$(ProjectDir)engine\scene;$(ProjectDir)engine\3d\Particle;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -101,9 +101,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="engine\3d\ParticleCommon.cpp" />
-    <ClCompile Include="engine\3d\ParticleEmitter.cpp" />
-    <ClCompile Include="engine\3d\ParticleManager.cpp" />
+    <ClCompile Include="engine\3d\Particle\ParticleCommon.cpp" />
+    <ClCompile Include="engine\3d\Particle\ParticleEmitter.cpp" />
+    <ClCompile Include="engine\3d\Particle\ParticleManager.cpp" />
+    <ClCompile Include="engine\3d\Particle\ParticleModel.cpp" />
     <ClCompile Include="engine\audio\SoundLoader.cpp" />
     <ClCompile Include="engine\audio\SoundPlayer.cpp" />
     <ClCompile Include="engine\base\Camera.cpp" />
@@ -113,6 +114,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\base\ImGuiManager.cpp" />
     <ClCompile Include="engine\io\Input.cpp" />
     <ClCompile Include="engine\base\Logger.cpp" />
+    <ClCompile Include="engine\math\PrimitiveGenerator.cpp" />
     <ClCompile Include="engine\scene\BaseScene.cpp" />
     <ClCompile Include="engine\scene\GamePlayScene.cpp" />
     <ClCompile Include="engine\scene\SceneFactory.cpp" />
@@ -134,9 +136,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\scene\SceneManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="engine\3d\ParticleCommon.h" />
-    <ClInclude Include="engine\3d\ParticleEmitter.h" />
-    <ClInclude Include="engine\3d\ParticleManager.h" />
+    <ClInclude Include="engine\3d\Particle\ParticleCommon.h" />
+    <ClInclude Include="engine\3d\Particle\ParticleEmitter.h" />
+    <ClInclude Include="engine\3d\Particle\ParticleManager.h" />
+    <ClInclude Include="engine\3d\Particle\ParticleModel.h" />
     <ClInclude Include="engine\audio\SoundLoader.h" />
     <ClInclude Include="engine\audio\SoundPlayer.h" />
     <ClInclude Include="engine\base\Camera.h" />
@@ -146,6 +149,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="engine\base\ImGuiManager.h" />
     <ClInclude Include="engine\io\Input.h" />
     <ClInclude Include="engine\base\Logger.h" />
+    <ClInclude Include="engine\math\Material.h" />
+    <ClInclude Include="engine\math\MaterialDate.h" />
     <ClInclude Include="engine\math\Matrix3x3.h" />
     <ClInclude Include="engine\math\Matrix4x4.h" />
     <ClInclude Include="engine\math\MatrixVector.h" />
@@ -159,12 +164,15 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="engine\2d\SpriteCommon.h" />
     <ClInclude Include="engine\base\StringUtility.h" />
     <ClInclude Include="engine\2d\TextureManager.h" />
+    <ClInclude Include="engine\math\ModelDate.h" />
+    <ClInclude Include="engine\math\PrimitiveGenerator.h" />
     <ClInclude Include="engine\math\Transform.h" />
     <ClInclude Include="engine\math\Vector2.h" />
     <ClInclude Include="engine\math\Vector3.h" />
     <ClInclude Include="engine\math\Vector4.h" />
     <ClInclude Include="engine\base\WinApp.h" />
     <ClInclude Include="engine\base\SrvManager.h" />
+    <ClInclude Include="engine\math\Vertex.h" />
     <ClInclude Include="engine\scene\AbstractSceneFactory.h" />
     <ClInclude Include="engine\scene\BaseScene.h" />
     <ClInclude Include="engine\scene\GamePlayScene.h" />

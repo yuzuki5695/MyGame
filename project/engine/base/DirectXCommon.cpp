@@ -242,7 +242,7 @@ void DirectXCommon::DescriptorHeapGenerate() {
     /*----------------------------------------------------------------------------*/
 
     // RTV用のヒープでディスクリプタの数は2。RTVはshader内で触るものではないので、ShaderVisibleはfalse
-    rtvDescriptorHeap = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 2, false);
+    rtvDescriptorHeap = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 3, false);
     // DSV用のヒープでディスクリプタの数は1。DSVはshader内で触るものではないので、ShaderVisibleはfalse
     dsvDescriptorHeap = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
 
@@ -266,19 +266,35 @@ void DirectXCommon::RenderviewInitialize() {
     /*--------------------------RTVの設定--------------------------*/
     /*------------------------------------------------------------*/
     
-    //RTVの設定
+    //----------------カスタムの設定-----------//
+    // RTVの設定
     rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;//出力結果をSRGB2変換して書き込む
     rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;//2Dテクスチャとして読み込む
-    //ディスクリプタの先頭を取得する
-    D3D12_CPU_DESCRIPTOR_HANDLE rtvStartHandle = GetCPUDescriptorHandle(rtvDescriptorHeap, descriptorsizeRTV, 0);
-    
+    // ディスクリプタの先頭を取得する
+    rtvStartHandle = GetCPUDescriptorHandle(rtvDescriptorHeap, descriptorsizeRTV, 0);
+
+    // カスタムRenderTarget用のリソース作成（赤でクリアされる）
+    const Vector4 kRenderTargetClearValue{ 1.0f, 0.0f, 0.0f, 1.0f }; // 赤
+
+    ComPtr <ID3D12Resource>  renderTextureResource = CreateRenderTextureResource(
+        device,
+        WinApp::kClientWidth,
+        WinApp::kClientHeight,
+        DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
+        kRenderTargetClearValue
+    );
+
     // ハンドルの数だけ作成する
     for (uint32_t i = 0; i < rtvHandlenum; ++i) {
         // ハンドルを設定
         rtvHandles[i] = rtvStartHandle;
-        // RTVを作成
+        if (i == 2) {
+            // レンダーターゲットリソースの場合
+            // swapChainResources[2] にカスタムRenderTextureリソースを代入
+            swapChainResources[2] = renderTextureResource;
+        }
+        // RTVを作成 
         device->CreateRenderTargetView(swapChainResources[i].Get(), &rtvDesc, rtvHandles[i]);
-        assert(SUCCEEDED(hr));
         // 次のハンドルに進む
         rtvStartHandle.ptr += device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
     }
@@ -372,6 +388,9 @@ void DirectXCommon::PreDraw() {
     commandList->ResourceBarrier(1, &barrier);
     // 描画先のRTVとDSVを設定する
     dsvHandle = dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+    commandList->RSSetViewports(1, &viewport);
+    commandList->RSSetScissorRects(1, &scissorRect);
+
     // 描画先のRTVを指定する
     commandList->OMSetRenderTargets(1, &rtvHandles[backBufferIndex], false, &dsvHandle);
     // 指定した深度で画面全体をクリアする
@@ -380,9 +399,6 @@ void DirectXCommon::PreDraw() {
     // 指定した色で画面全体をクリアする
     float clearColor[] = { 0.1f,0.25f,0.5f,1.0f };//青っぽい色。RGBAの順
     commandList->ClearRenderTargetView(rtvHandles[backBufferIndex], clearColor, 0, nullptr);
-
-    commandList->RSSetViewports(1, &viewport);
-    commandList->RSSetScissorRects(1, &scissorRect);
 }
 
 
@@ -400,8 +416,8 @@ void DirectXCommon::PostDrow() {
     hr = commandList->Close();
     assert(SUCCEEDED(hr));
     // GPUにコマンドリストのリストの実行を行わせる
-    ComPtr<ID3D12CommandList> commandLists[] = { commandList.Get() };
-    commandQueue->ExecuteCommandLists(1, commandLists->GetAddressOf());
+    ID3D12CommandList* commandLists[] = { commandList.Get() };
+    commandQueue->ExecuteCommandLists(1, commandLists);
     // GPUとOSに画面の交換を行うように通知する
     swapChain->Present(1, 0);
     // Fenceの値の更新
@@ -658,4 +674,43 @@ void DirectXCommon::UpdateFixFPS() {
     }
     // 現在時間を記録する
     reference_ = std::chrono::steady_clock::now();
+}
+
+ComPtr <ID3D12Resource> DirectXCommon::CreateRenderTextureResource(Microsoft::WRL::ComPtr <ID3D12Device> device, uint32_t width, uint32_t height, DXGI_FORMAT format, const Vector4& clearColor) {
+    //1. metadataを基にResourceの設定
+    D3D12_RESOURCE_DESC resourceDesc{};
+    resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+    resourceDesc.Alignment = 0;
+    resourceDesc.Width = width;
+    resourceDesc.Height = height;
+    resourceDesc.DepthOrArraySize = 1;
+    resourceDesc.MipLevels = 1;
+    resourceDesc.Format = format;
+    resourceDesc.SampleDesc.Count = 1;
+    resourceDesc.SampleDesc.Quality = 0;
+    resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+    resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
+
+    //2. 利用するHeapの設定。非常に特殊な運用。02_04exで一般的なケース版がある
+    D3D12_HEAP_PROPERTIES heapProperties{};
+    heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;								// 当然VRAM上に作る
+
+    D3D12_CLEAR_VALUE clearValue;
+    clearValue.Format = format;
+    clearValue.Color[0] = clearColor.x;
+    clearValue.Color[1] = clearColor.y;
+    clearValue.Color[2] = clearColor.z;
+    clearValue.Color[3] = clearColor.w;
+
+    //3. Resourceを生成する
+    ComPtr <ID3D12Resource> resource = nullptr;
+    HRESULT hr = device->CreateCommittedResource(
+        &heapProperties,														//Heapの設定
+        D3D12_HEAP_FLAG_NONE,													//Heapの特殊な設定。特になし。
+        &resourceDesc,															///Resourceの設定
+        D3D12_RESOURCE_STATE_RENDER_TARGET,										//これから描画することを前提としたTextureなのでRenderTargetとして使うことから始める
+        &clearValue,															//Clear最適地,ClearRenderTargetをこの色でClearするようにする。最適化されれいるので高速である
+        IID_PPV_ARGS(&resource));												//作成するResourceポインタへのポインタ
+    assert(SUCCEEDED(hr));
+    return resource;
 }

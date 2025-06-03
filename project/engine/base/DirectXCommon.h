@@ -9,6 +9,7 @@
 #include "Logger.h"
 #include "StringUtility.h"
 #include "externals/DirectXTex/DirectXTex.h"
+#include <Vector4.h>
 #pragma comment(lib,"dxcompiler.lib")
 
 // Directx基盤
@@ -45,6 +46,11 @@ public: // メンバ関数
 	/// テクスチャリソースの生成
 	/// </summary>
 	Microsoft::WRL::ComPtr <ID3D12Resource> CreateTextureResource(const Microsoft::WRL::ComPtr <ID3D12Device>& device, const DirectX::TexMetadata& metadata);
+
+	/// <summary>
+	/// レンダーテクスチャの生成
+	/// </summar
+	Microsoft::WRL::ComPtr <ID3D12Resource> CreateRenderTextureResource(Microsoft::WRL::ComPtr <ID3D12Device> device, uint32_t width, uint32_t height, DXGI_FORMAT format, const Vector4& clearColor);
 
 	/// <summary>
 	/// テクスチャデータの輸送
@@ -119,14 +125,14 @@ private: // メンバ変数
 	uint32_t descriptorsizeRTV;
 	uint32_t descriptorsizeDSV;
 	// スワップチェーンリソース
-	std::array<Microsoft::WRL::ComPtr<ID3D12Resource>, 2> swapChainResources;
+	std::array<Microsoft::WRL::ComPtr<ID3D12Resource>, 3> swapChainResources;
 	//RTVの設定
 	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
 	//ディスクリプタの先頭を取得する
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvStartHandle;
 	//RTVを2つ作るのでディスクリプタハンドルを2つ用意
-	const uint32_t rtvHandlenum = 2;
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[2];
+	const uint32_t rtvHandlenum = 3;
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[3];
 	// DepthStencilTextureをウインドウのサイズ
 	Microsoft::WRL::ComPtr <ID3D12Resource> depthStencilResource;
 	// フェンスの生成
