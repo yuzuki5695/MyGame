@@ -120,6 +120,8 @@
     <ClCompile Include="engine\math\PrimitiveGenerator.cpp">
       <Filter>ソースファイル\engine\math</Filter>
     </ClCompile>
+    <ClCompile Include="CameraManager.cpp" />
+    <ClCompile Include="Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\scene\AbstractSceneFactory.h">
@@ -254,6 +256,9 @@
     <ClInclude Include="engine\math\Vertex.h">
       <Filter>ヘッダーファイル\engine\math</Filter>
     </ClInclude>
+    <ClInclude Include="json.hpp" />
+    <ClInclude Include="CameraManager.h" />
+    <ClInclude Include="Player.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Object3d.hlsli">
@@ -335,6 +340,12 @@
     </Filter>
     <Filter Include="ソースファイル\engine\3d\particle">
       <UniqueIdentifier>{4370b318-81cc-4483-affd-5f7615389bee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\application\Player">
+      <UniqueIdentifier>{b0328aa2-78dc-4137-9637-f0afeffd7410}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\application\Player">
+      <UniqueIdentifier>{87e59460-8b3d-49aa-8efb-a3fadc35f9d5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

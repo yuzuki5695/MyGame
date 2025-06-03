@@ -4,7 +4,9 @@
 #include<Model.h>
 #include<SoundPlayer.h>
 #include<BaseScene.h>
-#include <ParticleEmitter.h>
+#include<ParticleEmitter.h>
+#include"Player.h"
+#include <CameraManager.h>
 
 // ゲームプレイシーン
 class GamePlayScene : public BaseScene
@@ -36,4 +38,8 @@ private: // メンバ変数
     SoundData soundData;
     // 音声プレイフラグ
     uint32_t soundfige;
+
+
+
+    std::unique_ptr <Player> player_;
 };

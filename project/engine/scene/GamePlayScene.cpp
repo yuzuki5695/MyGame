@@ -60,6 +60,13 @@ void GamePlayScene::Initialize() {
     // パーティクルグループ生成
     ParticleManager::GetInstance()->CreateParticleGroup("Particles", "Resources/uvChecker.png", "plane.obj", VertexType::Model);            // モデルで生成
 
+    // プレイヤーの初期化
+    player_ = std::make_unique<Player>();
+    player_->Initialize();
+    // プレイヤー初期化後にターゲット設定
+    CameraManager::GetInstance()->SetTarget(player_->GetObject3d());
+    CameraManager::GetInstance()->ToggleCameraMode(true);  // 追従カメラを有効にする
+
 }
 
 void GamePlayScene::Update() {
@@ -80,8 +87,11 @@ void GamePlayScene::Update() {
 #pragma region 全てのObject3d個々の更新処理
 
     // 更新処理
-    object3d->Update();
+    //object3d->Update();
     grass->Update();
+
+    // プレイヤー
+    player_->Update();
 
     ParticleManager::GetInstance()->Update();
 
@@ -102,6 +112,9 @@ void GamePlayScene::Draw() {
 #pragma region 全てのObject3d個々の描画処理
     // 3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
     Object3dCommon::GetInstance()->Commondrawing();
+
+    // プレイヤー
+    player_->Draw();
 
 
     grass->Draw();
