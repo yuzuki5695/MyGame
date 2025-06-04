@@ -47,11 +47,6 @@ void CameraManager::Update() {
 
         followCamera_->SetTranslate(cameraPos);
 
-        //// 方向をターゲットに向ける（ここではY軸固定の簡易的な実装）
-        //Vector3 toTarget = { targetPos.x - cameraPos.x, targetPos.y - cameraPos.y , targetPos.z - cameraPos.z};
-        //float angleY = std::atan2(toTarget.x, toTarget.z);
-        //followCamera_->SetRotate(Vector3(0.0f, angleY, 0.0f));
-
         followCamera_->Update();
     } else {
         // デフォルトカメラの更新
