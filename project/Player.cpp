@@ -163,10 +163,11 @@ Vector3 Player::UpdateObjectPosition() {
         hasRotatedOnCurve1 = false;
     }
 
-    // カーブ1でまだ回転していない場合は回転だけして動かない
-    if (CheckAndRotateAtCurve1() && currentCurveIndex == 1) {
-        return transform.translate; // 回転中は現在位置を返す（停止）
+    // 回転中なら移動はしない
+    if (CheckAndRotateAtCurve1(0.016f)) {
+        return transform.translate; // 回転中は現在位置を維持
     }
+
 
     const auto& curve = bezierCurves[currentCurveIndex];
     const auto& points = curve.points;
@@ -248,8 +249,31 @@ Vector3 Player::BezierInterpolate(const Vector3& p0, const Vector3& p1, const Ve
     return result;
 }
 
-void Player::RotatePlayerByDegrees(float degrees) {
-    float radians = degrees * (3.14159265f / 180.0f);
-    transform.rotate.y += radians;
-    object->SetRotate(transform.rotate);
+bool Player::CheckAndRotateAtCurve1(float deltaTime) {
+    if (currentCurveIndex == 1 && !hasRotatedOnCurve1) {
+        if (!isRotating) {
+            // 初期化（1度だけ）
+            isRotating = true;
+            rotationT = 0.0f;
+            rotateStart = transform.rotate;
+            rotateEnd = transform.rotate;
+            rotateEnd.y += -90.0f * (3.14159265f / 180.0f); // 90度
+        }
+
+        if (rotationT < 1.0f) {
+            rotationT += deltaTime / rotationDuration;
+            if (rotationT > 1.0f) rotationT = 1.0f;
+
+            float easeT = EaseInOutCubic(rotationT);
+            transform.rotate.y = rotateStart.y + (rotateEnd.y - rotateStart.y) * easeT;
+            object->SetRotate(transform.rotate);
+            return true; // まだ回転中
+        } else {
+            // 回転完了
+            isRotating = false;
+            hasRotatedOnCurve1 = true;
+            return false;
+        }
+    }
+    return false;
 }

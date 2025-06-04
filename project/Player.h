@@ -48,15 +48,14 @@ public:
 	const std::vector<Bullet*>& GetBullets() const { return bullets_; }
 
 
-	bool CheckAndRotateAtCurve1() {
-		if (currentCurveIndex == 1 && !hasRotatedOnCurve1) {
-			float radians = 45.0f * (3.14159265f / 180.0f);
-			transform.rotate.y += radians;
-			object->SetRotate(transform.rotate);
-			hasRotatedOnCurve1 = true;
-			return true; // 回転を行った
-		}
-		return false; // 何もしていない
+	bool CheckAndRotateAtCurve1(float deltaTime);
+
+	float EaseInOutSine(float t) {
+		return -(cosf(3.14159265f * t) - 1.0f) / 2.0f;
+	}
+
+	float EaseInOutCubic(float t) {
+		return t < 0.5f ? 4.0f * t * t * t : 1.0f - pow(-2.0f * t + 2.0f, 3) / 2.0f;
 	}
 
 
@@ -74,7 +73,11 @@ private:
 	bool hasRotatedOnCurve1 = false;
 
 
-
+	bool isRotating = false;
+	float rotationT = 0.0f;
+	float rotationDuration = 3.0f; // 1秒かけて回転（必要に応じて調整）
+	Vector3 rotateStart;
+	Vector3 rotateEnd;
 
 
 
@@ -114,6 +117,4 @@ public: // メンバ関数
 		return Vector3(0.0f, 0.0f, 1.0f);
 	}
 	std::vector<Bullet*>& GetBullet() { return bullets_; } // 非const版
-
-	void RotatePlayerByDegrees(float degrees);
 };
