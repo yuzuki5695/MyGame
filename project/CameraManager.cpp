@@ -42,16 +42,15 @@ void CameraManager::Update() {
         // ターゲットのワールド座標を取得
         const Vector3& targetPos = target_->GetTranslate();
 
-        // 追従カメラの位置をターゲットの後方・上方に設定（例）
-        Vector3 offset(0.0f, 3.0f, -30.0f);
-        Vector3 cameraPos = targetPos + offset;
+        // カメラ座標
+        Vector3 cameraPos = targetPos + offset_;
 
         followCamera_->SetTranslate(cameraPos);
 
-        // 方向をターゲットに向ける（ここではY軸固定の簡易的な実装）
-        Vector3 toTarget = { targetPos.x - cameraPos.x, targetPos.y - cameraPos.y , targetPos.z - cameraPos.z};
-        float angleY = std::atan2(toTarget.x, toTarget.z);
-        followCamera_->SetRotate(Vector3(0.0f, angleY, 0.0f));
+        //// 方向をターゲットに向ける（ここではY軸固定の簡易的な実装）
+        //Vector3 toTarget = { targetPos.x - cameraPos.x, targetPos.y - cameraPos.y , targetPos.z - cameraPos.z};
+        //float angleY = std::atan2(toTarget.x, toTarget.z);
+        //followCamera_->SetRotate(Vector3(0.0f, angleY, 0.0f));
 
         followCamera_->Update();
     } else {
@@ -69,8 +68,14 @@ void CameraManager::Update() {
     }
 }
 
-void CameraManager::SetTarget(Object3d* target) {
-    target_ = target;
+void CameraManager::SetTarget(Object3d* target, Vector3 offset) {  
+    if (target) {  
+       target_ = target;
+       offset_ = offset;
+       followCamera_->SetTranslate(target_->GetTranslate() + offset_);
+   } else {  
+       target_ = nullptr;  
+   }  
 }
 void CameraManager::ToggleCameraMode(bool followMode) {
     useFollowCamera_ = followMode;
@@ -84,13 +89,23 @@ void CameraManager::DrawImGui() {
         ToggleCameraMode(currentMode);
     };
     
-    Vector3 followCameraPos = followCamera_->GetTranslate();
-    Vector3 defaultCameraPos = defaultCamera_->GetTranslate();
 
-    ImGui::DragFloat3("Follow", &followCameraPos.x, 0.01f);
-    followCamera_->SetTranslate(followCameraPos);
-    ImGui::DragFloat3("Default", &defaultCameraPos.x, 0.01f);
+    // ---デフォルトカメラ ---
+    Vector3 defaultCameraRot = defaultCamera_->GetRotate();
+    Vector3 defaultCameraPos = defaultCamera_->GetTranslate();
+    ImGui::DragFloat3("Default Rotation", &defaultCameraRot.x, 0.01f);
+    ImGui::DragFloat3("Default Position", &defaultCameraPos.x, 0.01f);
     defaultCamera_->SetTranslate(defaultCameraPos);
+    defaultCamera_->SetRotate(defaultCameraRot);
+
+    // --- ターゲットカメラ ---
+    Vector3 followCameraPos = followCamera_->GetTranslate();
+    Vector3 followCameraRot = followCamera_->GetRotate();
+    ImGui::DragFloat3("Follow Position", &followCameraPos.x, 0.01f);
+    ImGui::DragFloat3("Follow Rotation", &followCameraRot.x, 0.01f);
+    followCamera_->SetTranslate(followCameraPos);
+    followCamera_->SetRotate(followCameraRot);
+
 	ImGui::End();
 #endif // USE_IMGUI
 }

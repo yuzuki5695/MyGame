@@ -47,6 +47,19 @@ public:
 	// 弾リストを取得
 	const std::vector<Bullet*>& GetBullets() const { return bullets_; }
 
+
+	bool CheckAndRotateAtCurve1() {
+		if (currentCurveIndex == 1 && !hasRotatedOnCurve1) {
+			float radians = 45.0f * (3.14159265f / 180.0f);
+			transform.rotate.y += radians;
+			object->SetRotate(transform.rotate);
+			hasRotatedOnCurve1 = true;
+			return true; // 回転を行った
+		}
+		return false; // 何もしていない
+	}
+
+
 private:
 
 	// Object3d
@@ -57,6 +70,29 @@ private:
 	int currentSegmentIndex = 0;
 	float t = 0.0f;
 	float speed = 0.001f;
+	// 回転フラグ
+	bool hasRotatedOnCurve1 = false;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	// カーブ開始フラグ
 	bool fige = false;
 
@@ -78,4 +114,6 @@ public: // メンバ関数
 		return Vector3(0.0f, 0.0f, 1.0f);
 	}
 	std::vector<Bullet*>& GetBullet() { return bullets_; } // 非const版
+
+	void RotatePlayerByDegrees(float degrees);
 };

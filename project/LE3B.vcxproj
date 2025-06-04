@@ -143,6 +143,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="CameraManager.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="engine\3d\Particle\ParticleCommon.h" />
     <ClInclude Include="engine\3d\Particle\ParticleEmitter.h" />

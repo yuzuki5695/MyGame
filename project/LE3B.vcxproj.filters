@@ -265,6 +265,7 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="Constants.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Object3d.hlsli">

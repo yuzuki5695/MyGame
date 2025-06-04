@@ -5,6 +5,7 @@
 #endif // USE_IMGUI
 #include<Input.h>
 #include <iostream>
+#include<Constants.h>
 
 using json = nlohmann::json;
 
@@ -20,7 +21,7 @@ void Player::Initialize() {
 
     ModelManager::GetInstance()->LoadModel("uvChecker.obj");
 
-    transform = { {1.0f, 1.0f, 1.0f}, {0.0f, -1.6f, 0.0f}, {0.0f, 0.0f, 0.0f} };
+    transform = { {1.0f, 1.0f, 1.0f}, {0.0f, 0.f, 0.0f}, {0.0f, 0.0f, 0.0f} };
 
     // jsonファイルからベジェ曲線の制御点を読み込む
     bezierCurves = LoadBezierCurvesFromJSON("Resources/bezier.json");
@@ -150,47 +151,33 @@ std::vector<Player::BezierCurve> Player::LoadBezierCurvesFromJSON(const std::str
     return curves;
 }
 
-
-Vector3 Player::BezierInterpolate(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float t) {
-    float u = 1.0f - t;
-    float tt = t * t;
-    float uu = u * u;
-    float uuu = uu * u;
-    float ttt = tt * t;
-
-    Vector3 result;
-    result = uuu * p0; // (1 - t)^3 * P0
-    result += 3 * uu * t * p1; // 3 * (1 - t)^2 * t * P1
-    result += 3 * u * tt * p2; // 3 * (1 - t) * t^2 * P2
-    result += ttt * p3; // t^3 * P3
-
-    return result;
-}
-
 Vector3 Player::UpdateObjectPosition() {
     if (bezierCurves.empty()) {
         return {}; // 空の曲線なら原点返す
     }
 
-    // カーブが全て終わっていたら最初に戻る
     if (currentCurveIndex >= bezierCurves.size()) {
         currentCurveIndex = 0;
         currentSegmentIndex = 0;
         t = 0.0f;
+        hasRotatedOnCurve1 = false;
+    }
+
+    // カーブ1でまだ回転していない場合は回転だけして動かない
+    if (CheckAndRotateAtCurve1() && currentCurveIndex == 1) {
+        return transform.translate; // 回転中は現在位置を返す（停止）
     }
 
     const auto& curve = bezierCurves[currentCurveIndex];
     const auto& points = curve.points;
 
     if (points.size() < 2) {
-        // このカーブは使えないので次へ進む
         currentCurveIndex++;
         currentSegmentIndex = 0;
         t = 0.0f;
-        return UpdateObjectPosition(); // 再帰的に処理を継続
+        return UpdateObjectPosition(); // 再帰で処理を継続
     }
 
-    // セグメントが終わったら次へ
     if (currentSegmentIndex + 1 >= points.size()) {
         currentCurveIndex++;
         currentSegmentIndex = 0;
@@ -198,7 +185,6 @@ Vector3 Player::UpdateObjectPosition() {
         return UpdateObjectPosition(); // 再帰で継続
     }
 
-    // 現在のセグメントを補間
     const auto& start = points[currentSegmentIndex];
     const auto& end = points[currentSegmentIndex + 1];
 
@@ -218,6 +204,8 @@ Vector3 Player::UpdateObjectPosition() {
 
     return pos;
 }
+
+
 
 void Player::attachBullet() {
     bulletTimer_ += 1.0f / 60.0f; // 毎フレーム経過時間を加算（60fps前提）
@@ -242,4 +230,26 @@ void Player::attachBullet() {
 
         canShoot_ = false; // 発射したら次の発射を禁止
     }
+}
+
+Vector3 Player::BezierInterpolate(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float t) {
+    float u = 1.0f - t;
+    float tt = t * t;
+    float uu = u * u;
+    float uuu = uu * u;
+    float ttt = tt * t;
+
+    Vector3 result;
+    result = uuu * p0; // (1 - t)^3 * P0
+    result += 3 * uu * t * p1; // 3 * (1 - t)^2 * t * P1
+    result += 3 * u * tt * p2; // 3 * (1 - t) * t^2 * P2
+    result += ttt * p3; // t^3 * P3
+
+    return result;
+}
+
+void Player::RotatePlayerByDegrees(float degrees) {
+    float radians = degrees * (3.14159265f / 180.0f);
+    transform.rotate.y += radians;
+    object->SetRotate(transform.rotate);
 }

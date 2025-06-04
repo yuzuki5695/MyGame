@@ -57,7 +57,7 @@ void GamePlayScene::Initialize() {
     player_ = std::make_unique<Player>();
     player_->Initialize();
     // プレイヤー初期化後にターゲット設定
-    CameraManager::GetInstance()->SetTarget(player_->GetObject3d());
+    CameraManager::GetInstance()->SetTarget(player_->GetObject3d(),Vector3(0.0f, 3.0f, -30.0f));
     CameraManager::GetInstance()->ToggleCameraMode(true);  // 追従カメラを有効にする
 
     // 敵を複数体生成
