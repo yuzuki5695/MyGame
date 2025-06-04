@@ -66,6 +66,9 @@ void GamePlayScene::Initialize() {
         enemy->Initialize();
         enemys_.push_back(std::move(enemy));
     }
+
+    map01_ = std::make_unique<Map>();
+    map01_->Initialize();
 }
 
 void GamePlayScene::Update() {
@@ -74,8 +77,6 @@ void GamePlayScene::Update() {
     // object3d
 
     // Camera
-    camera->DebugUpdate();
-    
     CameraManager::GetInstance()->DrawImGui();
 
 
@@ -116,6 +117,10 @@ void GamePlayScene::Update() {
     CheckBulletEnemyCollisions();  // 当たり判定
     CleanupInactiveObjects();      // 不要なオブジェクト削除
 
+
+    map01_->Update();
+
+
     // パーティクル
     ParticleManager::GetInstance()->Update();
 
@@ -136,8 +141,8 @@ void GamePlayScene::Draw() {
 #pragma region 全てのObject3d個々の描画処理
     // 3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
     Object3dCommon::GetInstance()->Commondrawing();
-
-    grass->Draw();
+    
+    map01_->Draw();
 
     // プレイヤー
     player_->Draw();

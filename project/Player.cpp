@@ -19,7 +19,7 @@ void Player::Initialize() {
 
     ModelManager::GetInstance()->LoadModel("uvChecker.obj");
 
-    transform = { {1.0f, 1.0f, 1.0f}, {0.0f, -1.6f, 0.0f}, {0.0f, 3.0f, 0.0f} };
+    transform = { {1.0f, 1.0f, 1.0f}, {0.0f, -1.6f, 0.0f}, {0.0f, 0.0f, 0.0f} };
 
     // jsonファイルからベジェ曲線の制御点を読み込む
     bezierPoints = LoadBezierFromJSON("Resources/bezier.json");
