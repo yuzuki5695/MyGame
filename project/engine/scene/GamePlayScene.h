@@ -21,6 +21,15 @@ public: // メンバ関数
     void Update() override;
     // 描画
     void Draw() override;
+
+
+    void CheckBulletEnemyCollisions();
+    void CleanupInactiveObjects();
+
+    inline float Length(const Vector3& v) {
+        return std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+    }
+
 private: // メンバ変数
     // オブジェクトデータ
     // camera 

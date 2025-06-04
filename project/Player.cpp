@@ -7,18 +7,22 @@
 
 using json = nlohmann::json;
 
+// デストラクタで弾を解放するのも忘れずに
 Player::~Player() {
-    // 必要ならリソース解放など
+    for (auto b : bullets_) {
+        delete b;
+    }
+    bullets_.clear();
 }
 
 void Player::Initialize() {
 
     ModelManager::GetInstance()->LoadModel("uvChecker.obj");
-    
-	transform = { {1.0f, 1.0f, 1.0f}, {0.0f, -1.6f, 0.0f}, {0.0f, 3.0f, 0.0f} };
 
-	// jsonファイルからベジェ曲線の制御点を読み込む
-	bezierPoints = LoadBezierFromJSON("Resources/bezier.json");
+    transform = { {1.0f, 1.0f, 1.0f}, {0.0f, -1.6f, 0.0f}, {0.0f, 3.0f, 0.0f} };
+
+    // jsonファイルからベジェ曲線の制御点を読み込む
+    bezierPoints = LoadBezierFromJSON("Resources/bezier.json");
 
     // プレイヤー生成
     object = Object3d::Create("uvChecker.obj", transform);
@@ -48,6 +52,15 @@ void Player::Update() {
         transform.translate = transform.translate + moveDelta;
     }
 
+    attachBullet();
+
+    // 弾の更新
+    for (auto& b : bullets_) {
+        if (b->IsActive()) {
+            b->Update();
+        }
+    }
+
     // 移動後の位置をObjectに反映
     object->SetTranslate(transform.translate);
     object->SetRotate(transform.rotate);
@@ -70,6 +83,12 @@ void Player::Update() {
 void Player::Draw() {
     // プレイヤー描画
     object->Draw();
+    // 弾の描画
+    for (auto& b : bullets_) {
+        if (b->IsActive()) {
+            b->Draw();
+        }
+    }
 }
 
 std::vector<Player::BezierPoint> Player::LoadBezierFromJSON(const std::string& filePath) {
@@ -147,4 +166,30 @@ Vector3 Player::UpdateObjectPosition() {
         }
     }
     return Position; // ベジェ曲線の終点など適宜返す
+}
+
+
+void Player::attachBullet() {
+    bulletTimer_ += 1.0f / 60.0f; // 毎フレーム経過時間を加算（60fps前提）
+    // 30秒経過したら発射可能にする
+    if (bulletTimer_ >= bulletInterval_) {
+        canShoot_ = true;
+        bulletTimer_ = 0.0f; // タイマーリセット
+    }
+
+    // 弾が撃てるか確認
+    if (!canShoot_) return;
+
+    // スペースキーが押されたら弾を撃つ
+    if (Input::GetInstance()->Pushkey(DIK_SPACE)) {
+        Bullet* newBullet = new Bullet();
+        // 発射位置：プレイヤーの現在位置
+        Vector3 startPos = transform.translate;
+        // 発射方向（プレイヤーの前方）
+        Vector3 forward = Vector3(0.0f, 0.0f, 1.0f);
+        newBullet->Initialize(startPos, forward, 0.5f);
+        bullets_.push_back(newBullet);
+
+        canShoot_ = false; // 発射したら次の発射を禁止
+    }
 }

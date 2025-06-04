@@ -113,6 +113,8 @@ void GamePlayScene::Update() {
         }
     }
 
+    CheckBulletEnemyCollisions();  // 当たり判定
+    CleanupInactiveObjects();      // 不要なオブジェクト削除
 
     // パーティクル
     ParticleManager::GetInstance()->Update();
@@ -159,4 +161,57 @@ void GamePlayScene::Draw() {
     SpriteCommon::GetInstance()->Commondrawing();
 
 #pragma endregion 全てのSprite個々の描画処理
+}
+
+
+void GamePlayScene::CheckBulletEnemyCollisions() {
+
+    // 自弾リストの取得
+    const std::vector<Bullet*>& bullets_ = player_->GetBullets();
+
+
+    for (Bullet* bullet : bullets_) {
+        if (!bullet->IsActive()) continue;
+
+        for (const auto& enemy : enemys_) {
+            if (!enemy->IsActive()) continue;
+
+            //float dist = Length(bullet->GetPosition() - enemy->GetPosition());
+            Vector3 delta = {
+                bullet->GetPosition().x - enemy->GetPosition().x
+                , bullet->GetPosition().y - enemy->GetPosition().y
+                , bullet->GetPosition().z - enemy->GetPosition().z
+            };
+            float dist = Length(delta);
+
+            float collisionDist = bullet->GetRadius() + enemy->GetRadius();
+
+            if (dist <= collisionDist) {
+                bullet->SetInactive(); // 弾を非アクティブに
+                enemy->SetInactive();  // 敵も非アクティブに
+                break; // 一発で1体だけ倒す場合はbreak
+            }
+        }
+    }
+}
+
+void GamePlayScene::CleanupInactiveObjects() {
+    // 自弾リストの取得
+    std::vector<Bullet*>& bullets_ = player_->GetBullet();
+
+    // bullets_ を非アクティブなものだけ削除
+    bullets_.erase(std::remove_if(bullets_.begin(), bullets_.end(),
+        [](Bullet* b) {
+            if (!b->IsActive()) {
+                delete b;
+                return true;
+            }
+            return false;
+        }), bullets_.end());
+
+    enemys_.erase(std::remove_if(enemys_.begin(), enemys_.end(),
+        [](const std::unique_ptr<Enemy>& e) {
+            return !e->IsActive(); // unique_ptr の所有権は move されるので delete は不要
+        }), enemys_.end());
+
 }
