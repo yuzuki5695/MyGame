@@ -6,6 +6,7 @@
 #include <string>
 #include<Transform.h>
 #include "Bullet.h"
+#include<map>
 
 class Player
 {
