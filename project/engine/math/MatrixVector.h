@@ -53,4 +53,8 @@ namespace MatrixVector
 	// クロス積
 	Vector3 Cross(const Vector3& a, const Vector3& b);
 
+
+	Matrix4x4 MakeRotateMatrix(const Vector3& rotation);
+
+	Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m);
 };

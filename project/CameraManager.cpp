@@ -67,11 +67,17 @@ void CameraManager::SetTarget(Object3d* target, Vector3 offset) {
     if (target) {  
        target_ = target;
        offset_ = offset;
-       followCamera_->SetTranslate(target_->GetTranslate() + offset_);
+       // プレイヤーのワールド回転を考慮してオフセットを変換
+       Matrix4x4 rotationMatrix = MakeRotateMatrix(target_->GetRotate());
+       Vector3 worldOffset = TransformNormal(offset_, rotationMatrix);
+
+       // プレイヤー位置 + 回転後オフセットをカメラ位置に設定
+       followCamera_->SetTranslate(target_->GetTranslate() + worldOffset);
    } else {  
        target_ = nullptr;  
    }  
 }
+
 void CameraManager::ToggleCameraMode(bool followMode) {
     useFollowCamera_ = followMode;
 }

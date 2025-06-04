@@ -269,4 +269,40 @@ namespace MatrixVector {
             a.x * b.y - a.y * b.x
         };
     }
+
+    Matrix4x4 MakeRotateMatrix(const Vector3& rotation) {
+        // 各軸の回転行列を生成
+        Matrix4x4 rotX = {
+            1, 0, 0, 0,
+            0, std::cos(rotation.x), std::sin(rotation.x), 0,
+            0, -std::sin(rotation.x), std::cos(rotation.x), 0,
+            0, 0, 0, 1
+        };
+
+        Matrix4x4 rotY = {
+            std::cos(rotation.y), 0, -std::sin(rotation.y), 0,
+            0, 1, 0, 0,
+            std::sin(rotation.y), 0, std::cos(rotation.y), 0,
+            0, 0, 0, 1
+        };
+
+        Matrix4x4 rotZ = {
+            std::cos(rotation.z), std::sin(rotation.z), 0, 0,
+            -std::sin(rotation.z), std::cos(rotation.z), 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1
+        };
+
+        // Z→X→Yの順で合成
+        return rotY * rotX * rotZ;
+    }
+
+    Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m) {
+        Vector3 result;
+        result.x = v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0];
+        result.y = v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1];
+        result.z = v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2];
+        return result;
+    }
+
 };
