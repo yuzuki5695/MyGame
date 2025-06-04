@@ -7,6 +7,7 @@
 #include<ParticleEmitter.h>
 #include"Player.h"
 #include <CameraManager.h>
+#include "Enemy.h"
 
 // ゲームプレイシーン
 class GamePlayScene : public BaseScene
@@ -34,4 +35,6 @@ private: // メンバ変数
 
 
     std::unique_ptr <Player> player_;
+
+    std::vector<std::unique_ptr<Enemy>> enemys_;
 };

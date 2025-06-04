@@ -60,6 +60,12 @@ void GamePlayScene::Initialize() {
     CameraManager::GetInstance()->SetTarget(player_->GetObject3d());
     CameraManager::GetInstance()->ToggleCameraMode(true);  // 追従カメラを有効にする
 
+    // 敵を複数体生成
+    for (int i = 0; i < 10; ++i) {
+        auto enemy = std::make_unique<Enemy>();
+        enemy->Initialize();
+        enemys_.push_back(std::move(enemy));
+    }
 }
 
 void GamePlayScene::Update() {
@@ -71,6 +77,17 @@ void GamePlayScene::Update() {
     camera->DebugUpdate();
     
     CameraManager::GetInstance()->DrawImGui();
+
+
+    ImGui::Begin("Enemys");
+    int index = 0;
+    for (const auto& enemy : enemys_) {
+        std::string label = "Enemy " + std::to_string(index) + " Active";
+        bool isActive = enemy->IsActive(); // 値を一時変数にコピー
+        ImGui::Text("%s: %s", label.c_str(), isActive ? "true" : "false");
+        index++;
+    }
+    ImGui::End();
 
 #endif // USE_IMGUI
 #pragma endregion ImGuiの更新処理終了 
@@ -88,6 +105,16 @@ void GamePlayScene::Update() {
     // プレイヤー
     player_->Update();
 
+
+    // 敵
+    for (auto& enemy : enemys_) {
+        if (enemy->IsActive()) {
+            enemy->Update();
+        }
+    }
+
+
+    // パーティクル
     ParticleManager::GetInstance()->Update();
 
 #pragma endregion 全てのObject3d個々の更新処理
@@ -108,12 +135,19 @@ void GamePlayScene::Draw() {
     // 3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
     Object3dCommon::GetInstance()->Commondrawing();
 
+    grass->Draw();
+
     // プレイヤー
     player_->Draw();
 
+    // 敵
+    for (auto& enemy : enemys_) {
+        if (enemy->IsActive()) {
+            enemy->Draw();
+        }
+    }
 
-    grass->Draw();
-    //object3d->Draw();
+
 
     // パーティクルの描画準備。パーティクルの描画に共通のグラフィックスコマンドを積む 
     ParticleCommon::GetInstance()->Commondrawing();
