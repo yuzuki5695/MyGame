@@ -24,13 +24,6 @@ private: // メンバ変数
     // オブジェクトデータ
     // camera 
     std::unique_ptr <Camera> camera = nullptr;
-    //// カメラの現在の位置と回転を取得
-    Vector3 Cameraposition;
-    Vector3 Camerarotation;
-    // Sprite
-    std::unique_ptr<Sprite> sprite = nullptr;
-    // Object3d
-    std::unique_ptr <Object3d> object3d = nullptr;
     // 地面
     std::unique_ptr <Object3d> grass = nullptr;
 
@@ -38,7 +31,6 @@ private: // メンバ変数
     SoundData soundData;
     // 音声プレイフラグ
     uint32_t soundfige;
-
 
 
     std::unique_ptr <Player> player_;

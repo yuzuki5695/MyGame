@@ -20,14 +20,12 @@ void GamePlayScene::Initialize() {
 
     // カメラの初期化
     camera = std::make_unique<Camera>();
-    camera->SetTranslate(Vector3(0.0f, 2.0f, -15.0f));
+    camera->SetTranslate(Vector3(0.0f, 0.0f, -30.0f));
     camera->SetRotate(Vector3(0.0f, 0.0f, 0.0f));
     Object3dCommon::GetInstance()->SetDefaultCamera(camera.get());
     ParticleCommon::GetInstance()->SetDefaultCamera(camera.get());
 
-    // カメラの現在の位置と回転を取得
-    Cameraposition = camera->GetTranslate();
-    Camerarotation = camera->GetRotate();
+   CameraManager::GetInstance()->Initialize();
 
     // テクスチャを読み込む
     TextureManager::GetInstance()->LoadTexture("Resources/uvChecker.png");
@@ -50,12 +48,7 @@ void GamePlayScene::Initialize() {
     // 音声プレイフラグ
     soundfige = 0;
 
-    // スプライトの初期化
-    sprite = Sprite::Create("Resources/uvChecker.png", Vector2{ 0.0f,0.0f }, 0.0f, Vector2{ 360.0f,360.0f });
-
-    // オブジェクト作成
-    object3d = Object3d::Create("monsterBallUV.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, -1.6f, 0.0f}, {0.0f, 0.0f, 0.0f} }));
-    grass = Object3d::Create("terrain.obj", Transform({ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 2.0f} }));
+    grass = Object3d::Create("terrain.obj", Transform({ {1.0f, 1.0f, 10.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 70.0f} }));
 
     // パーティクルグループ生成
     ParticleManager::GetInstance()->CreateParticleGroup("Particles", "Resources/uvChecker.png", "plane.obj", VertexType::Model);            // モデルで生成
@@ -76,13 +69,15 @@ void GamePlayScene::Update() {
 
     // Camera
     camera->DebugUpdate();
+    
+    CameraManager::GetInstance()->DrawImGui();
 
 #endif // USE_IMGUI
 #pragma endregion ImGuiの更新処理終了 
     /*-------------------------------------------*/
     /*--------------Cameraの更新処理---------------*/
     /*------------------------------------------*/
-    camera->Update();
+    CameraManager::GetInstance()->Update();
 
 #pragma region 全てのObject3d個々の更新処理
 
