@@ -4,6 +4,7 @@
 #include<ImGuiManager.h>
 #endif // USE_IMGUI
 #include<Input.h>
+#include <iostream>
 
 using json = nlohmann::json;
 
@@ -22,7 +23,7 @@ void Player::Initialize() {
     transform = { {1.0f, 1.0f, 1.0f}, {0.0f, -1.6f, 0.0f}, {0.0f, 0.0f, 0.0f} };
 
     // jsonファイルからベジェ曲線の制御点を読み込む
-    bezierPoints = LoadBezierFromJSON("Resources/bezier.json");
+    bezierCurves = LoadBezierCurvesFromJSON("Resources/bezier.json");
 
     // プレイヤー生成
     object = Object3d::Create("uvChecker.obj", transform);
@@ -91,8 +92,8 @@ void Player::Draw() {
     }
 }
 
-std::vector<Player::BezierPoint> Player::LoadBezierFromJSON(const std::string& filePath) {
-    std::vector<BezierPoint> points;
+std::vector<Player::BezierCurve> Player::LoadBezierCurvesFromJSON(const std::string& filePath) {
+    std::vector<BezierCurve> curves;
 
     std::ifstream file(filePath);
     if (!file.is_open()) {
@@ -102,28 +103,53 @@ std::vector<Player::BezierPoint> Player::LoadBezierFromJSON(const std::string& f
     json j;
     file >> j;
 
-    for (const auto& pointData : j) {
-        BezierPoint pt;
-        pt.handleLeft = {
-            pointData["handle_left"][0],
-            pointData["handle_left"][1],
-            pointData["handle_left"][2]
-        };
-        pt.controlPoint = {
-            pointData["control_point"][0],
-            pointData["control_point"][1],
-            pointData["control_point"][2]
-        };
-        pt.handleRight = {
-            pointData["handle_right"][0],
-            pointData["handle_right"][1],
-            pointData["handle_right"][2]
-        };
-        points.push_back(pt);
+    if (!j.contains("object_names") || !j["object_names"].is_array()) {
+        throw std::runtime_error("JSONにobject_namesが含まれていません。");
     }
 
-    return points;
+    const auto& objectNames = j["object_names"];
+
+    for (const auto& name : objectNames) {
+        if (!j.contains(name) || !j[name].is_array()) {
+            std::cerr << "[警告] \"" << name << "\" はJSON内に存在しないか、配列ではありません。スキップします。\n";
+            continue;
+        }
+
+        BezierCurve curve;
+        curve.name = name;
+
+        for (const auto& spline : j[name]) {
+            for (const auto& pointData : spline) {
+                if (!pointData.contains("control_point")) continue;
+
+                BezierPoint pt;
+                pt.handleLeft = {
+                    pointData["handle_left"][0],
+                    pointData["handle_left"][1],
+                    pointData["handle_left"][2]
+                };
+                pt.controlPoint = {
+                    pointData["control_point"][0],
+                    pointData["control_point"][1],
+                    pointData["control_point"][2]
+                };
+                pt.handleRight = {
+                    pointData["handle_right"][0],
+                    pointData["handle_right"][1],
+                    pointData["handle_right"][2]
+                };
+                curve.points.push_back(pt);
+            }
+        }
+
+        if (!curve.points.empty()) {
+            curves.push_back(curve);
+        }
+    }
+
+    return curves;
 }
+
 
 Vector3 Player::BezierInterpolate(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float t) {
     float u = 1.0f - t;
@@ -141,33 +167,57 @@ Vector3 Player::BezierInterpolate(const Vector3& p0, const Vector3& p1, const Ve
     return result;
 }
 
-// 毎フレーム呼ばれる関数内など
 Vector3 Player::UpdateObjectPosition() {
-    Vector3 Position{};
-
-    int segmentIndex = 0; // 今は1つだけと仮定、複数ならループ管理
-
-    if (segmentIndex + 1 < bezierPoints.size()) {
-        const BezierPoint& start = bezierPoints[segmentIndex];
-        const BezierPoint& end = bezierPoints[segmentIndex + 1];
-
-        Position = BezierInterpolate(
-            start.controlPoint,
-            start.handleRight,
-            end.handleLeft,
-            end.controlPoint,
-            t
-        );
-
-        t += speed;
-        if (t > 1.0f) {
-            t = 0.0f;
-            segmentIndex++;
-        }
+    if (bezierCurves.empty()) {
+        return {}; // 空の曲線なら原点返す
     }
-    return Position; // ベジェ曲線の終点など適宜返す
-}
 
+    // カーブが全て終わっていたら最初に戻る
+    if (currentCurveIndex >= bezierCurves.size()) {
+        currentCurveIndex = 0;
+        currentSegmentIndex = 0;
+        t = 0.0f;
+    }
+
+    const auto& curve = bezierCurves[currentCurveIndex];
+    const auto& points = curve.points;
+
+    if (points.size() < 2) {
+        // このカーブは使えないので次へ進む
+        currentCurveIndex++;
+        currentSegmentIndex = 0;
+        t = 0.0f;
+        return UpdateObjectPosition(); // 再帰的に処理を継続
+    }
+
+    // セグメントが終わったら次へ
+    if (currentSegmentIndex + 1 >= points.size()) {
+        currentCurveIndex++;
+        currentSegmentIndex = 0;
+        t = 0.0f;
+        return UpdateObjectPosition(); // 再帰で継続
+    }
+
+    // 現在のセグメントを補間
+    const auto& start = points[currentSegmentIndex];
+    const auto& end = points[currentSegmentIndex + 1];
+
+    Vector3 pos = BezierInterpolate(
+        start.controlPoint,
+        start.handleRight,
+        end.handleLeft,
+        end.controlPoint,
+        t
+    );
+
+    t += speed;
+    if (t >= 1.0f) {
+        t = 0.0f;
+        currentSegmentIndex++;
+    }
+
+    return pos;
+}
 
 void Player::attachBullet() {
     bulletTimer_ += 1.0f / 60.0f; // 毎フレーム経過時間を加算（60fps前提）

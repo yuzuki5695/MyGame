@@ -17,6 +17,11 @@ public:
 		Vector3 handleRight;
 	};
 
+	struct BezierCurve {
+		std::string name;
+		std::vector<BezierPoint> points;
+	};
+
 public:
 	~Player();
 
@@ -28,7 +33,7 @@ public:
 	void Draw();
 
 
-	std::vector<BezierPoint> LoadBezierFromJSON(const std::string& filePath);
+	std::vector<BezierCurve> LoadBezierCurvesFromJSON(const std::string& filePath);
 
 	Vector3 BezierInterpolate(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float t);
 
@@ -47,10 +52,12 @@ private:
 	// Object3d
 	std::unique_ptr <Object3d> object = nullptr;
 
-	std::vector<BezierPoint> bezierPoints;
+	std::vector<BezierCurve> bezierCurves;
+	int currentCurveIndex = 0;
+	int currentSegmentIndex = 0;
 	float t = 0.0f;
-	float speed = 0.001f; // 移動の速さ
-
+	float speed = 0.001f;
+	// カーブ開始フラグ
 	bool fige = false;
 
 	Transform transform{};
