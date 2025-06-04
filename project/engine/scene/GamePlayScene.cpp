@@ -52,6 +52,10 @@ void GamePlayScene::Initialize() {
 
     // パーティクルグループ生成
     ParticleManager::GetInstance()->CreateParticleGroup("Particles", "Resources/uvChecker.png", "plane.obj", VertexType::Model);            // モデルで生成
+    ParticleManager::GetInstance()->CreateParticleGroup("Circle", "Resources/circle2.png", "plane.obj", VertexType::Model);
+    ParticleManager::GetInstance()->CreateParticleGroup("Ring", "Resources/gradationLine.png", "plane.obj", VertexType::Ring);              // リングで生成
+
+
 
     // プレイヤーの初期化
     player_ = std::make_unique<Player>();
@@ -69,6 +73,23 @@ void GamePlayScene::Initialize() {
 
     map01_ = std::make_unique<Map>();
     map01_->Initialize();
+
+
+    random_ = {
+        //座標
+        {0.0f,0.0f,0.0f},  // 最小
+        {0.0f,0.0f,0.0f},  // 最大
+        // 回転
+        {0.0f,0.0f,-std::numbers::pi_v<float>},  // 最小
+        {0.0f,0.0f, std::numbers::pi_v<float>},  // 最大
+        // サイズ
+        {0.0f,0.4f,0.0f}, // 最小
+        {0.0f,1.5f,0.0f}, // 最大
+        // カラー
+        0.0f,  // 最小
+        1.0f   // 最大
+    };
+
 }
 
 void GamePlayScene::Update() {
@@ -120,10 +141,8 @@ void GamePlayScene::Update() {
 
     map01_->Update();
 
-
     // パーティクル
     ParticleManager::GetInstance()->Update();
-
 #pragma endregion 全てのObject3d個々の更新処理
 
 #pragma region 全てのSprite個々の更新処理
@@ -194,6 +213,32 @@ void GamePlayScene::CheckBulletEnemyCollisions() {
             if (dist <= collisionDist) {
                 bullet->SetInactive(); // 弾を非アクティブに
                 enemy->SetInactive();  // 敵も非アクティブに
+
+
+                // 敵の位置にパーティクルを出す
+                Transform particleTransform = {
+                    {1.0f, 2.0f, 1.0f},                  // scale（必要に応じて変更）
+                    {0.0f, 0.0f, 0.0f},                  // rotation
+                    {enemy->GetPosition().x,enemy->GetPosition().y + 2.0f,enemy->GetPosition().z}                // 敵の位置を使用
+                };
+
+                std::unique_ptr<ParticleEmitter> deathEffect = std::make_unique<ParticleEmitter>(
+                    "Ring",                                                                              // パーティクルグループ名
+                    1,                                                                                     // 発生数
+                    particleTransform,                                                                     // サイズ,回転,位置
+                    Vector4{ 1.0f,1.0f,1.0f,1.0f },                                                        // カラー
+                    3.0f,                                                                                  // 発生周期 or 寿命（自由に定義可能）
+                    0.0f,                                                                                  // 経過時間（基本は0から開始）
+                    Velocity{ {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0} },                 // ← 風
+                    random_                                                                                // ランダムパラメータ（速度、回転、スケール、色などの範囲を指定）
+                );
+
+                // 即時発生（Emit関数呼び出し）
+                deathEffect->Emit();
+                
+                // 必要であれば、シーンで保持・管理するリストにpush_back
+                particleEmitters_.push_back(std::move(deathEffect));
+
                 break; // 一発で1体だけ倒す場合はbreak
             }
         }

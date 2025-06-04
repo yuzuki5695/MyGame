@@ -21,15 +21,13 @@ void Player::Initialize() {
 
     ModelManager::GetInstance()->LoadModel("uvChecker.obj");
 
-    transform = { {1.0f, 1.0f, 1.0f}, {0.0f, 0.f, 0.0f}, {0.0f, 0.0f, 0.0f} };
+    transform = { {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} };
 
     // jsonファイルからベジェ曲線の制御点を読み込む
     bezierCurves = LoadBezierCurvesFromJSON("Resources/bezier.json");
 
     // プレイヤー生成
     object = Object3d::Create("uvChecker.obj", transform);
-
-    // 球生成
 
 }
 
@@ -161,12 +159,19 @@ Vector3 Player::UpdateObjectPosition() {
         currentSegmentIndex = 0;
         t = 0.0f;
         hasRotatedOnCurve1 = false;
+ 
+        // 初期地点に戻す（任意）
+        if (!bezierCurves.empty() && !bezierCurves[0].points.empty()) {
+            moveOffset = { 0.0f, 0.0f, 0.0f };
+            transform.translate = bezierCurves[0].points[0].controlPoint;
+            object->SetTranslate(transform.translate);
+        }
     }
 
-    // 回転中なら移動はしない
-    if (CheckAndRotateAtCurve1(0.016f)) {
-        return transform.translate; // 回転中は現在位置を維持
-    }
+    //// 回転中なら移動はしない
+    //if (CheckAndRotateAtCurve1(0.016f)) {
+    //    return transform.translate; // 回転中は現在位置を維持
+    //}
 
 
     const auto& curve = bezierCurves[currentCurveIndex];

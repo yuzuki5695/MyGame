@@ -31,6 +31,10 @@ private:
     Camera* defaultCamera_; // 追従しないカメラ
 
     bool useFollowCamera_ = false; // カメラモード切替用フラグ
+
+
+
+
 public: // メンバ関数
     // 追従対象をセット（nullptrなら追従なし）
     void SetTarget(Object3d* target, Vector3 offset);

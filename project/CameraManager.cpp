@@ -67,12 +67,7 @@ void CameraManager::SetTarget(Object3d* target, Vector3 offset) {
     if (target) {  
        target_ = target;
        offset_ = offset;
-       // プレイヤーのワールド回転を考慮してオフセットを変換
-       Matrix4x4 rotationMatrix = MakeRotateMatrix(target_->GetRotate());
-       Vector3 worldOffset = TransformNormal(offset_, rotationMatrix);
-
-       // プレイヤー位置 + 回転後オフセットをカメラ位置に設定
-       followCamera_->SetTranslate(target_->GetTranslate() + worldOffset);
+       followCamera_->SetTranslate(target_->GetTranslate() + offset_);
    } else {  
        target_ = nullptr;  
    }  
@@ -92,14 +87,18 @@ void CameraManager::DrawImGui() {
     
 
     // ---デフォルトカメラ ---
+    ImGui::Separator(); // 区切り線
+    ImGui::Text("== Default Camera ==");
     Vector3 defaultCameraRot = defaultCamera_->GetRotate();
     Vector3 defaultCameraPos = defaultCamera_->GetTranslate();
-    ImGui::DragFloat3("Default Rotation", &defaultCameraRot.x, 0.01f);
     ImGui::DragFloat3("Default Position", &defaultCameraPos.x, 0.01f);
+    ImGui::DragFloat3("Default Rotation", &defaultCameraRot.x, 0.01f);
     defaultCamera_->SetTranslate(defaultCameraPos);
     defaultCamera_->SetRotate(defaultCameraRot);
 
     // --- ターゲットカメラ ---
+    ImGui::Separator(); // 区切り線
+    ImGui::Text("== Follow Camera ==");
     Vector3 followCameraPos = followCamera_->GetTranslate();
     Vector3 followCameraRot = followCamera_->GetRotate();
     ImGui::DragFloat3("Follow Position", &followCameraPos.x, 0.01f);

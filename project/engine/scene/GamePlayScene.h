@@ -50,4 +50,8 @@ private: // メンバ変数
 
     std::unique_ptr <Map> map01_;
 
+
+    // パーティクルエミッタのリスト（死亡エフェクトなどを管理）
+    std::vector<std::unique_ptr<ParticleEmitter>> particleEmitters_;
+    RandomParameter random_;
 };
