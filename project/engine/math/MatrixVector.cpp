@@ -305,4 +305,26 @@ namespace MatrixVector {
         return result;
     }
 
+
+    Matrix4x4 MakeLookRotationMatrix(Vector3 eye, Vector3 target, Vector3 up) {
+        Vector3 zaxis = Normalize(target - eye);  // forward
+        Vector3 xaxis = Normalize(Cross(up, zaxis)); // right
+        Vector3 yaxis = Cross(zaxis, xaxis); // new up
+
+        Matrix4x4 rotation;
+        rotation.m[0][0] = xaxis.x; rotation.m[0][1] = xaxis.y; rotation.m[0][2] = xaxis.z;
+        rotation.m[1][0] = yaxis.x; rotation.m[1][1] = yaxis.y; rotation.m[1][2] = yaxis.z;
+        rotation.m[2][0] = zaxis.x; rotation.m[2][1] = zaxis.y; rotation.m[2][2] = zaxis.z;
+
+        return rotation;
+    }
+    
+    Vector3 ExtractEulerAngles(const Matrix4x4& m) {
+        Vector3 angles;
+        angles.y = std::atan2(m.m[0][2], m.m[2][2]);  // yaw
+        angles.x = std::asin(-m.m[1][2]);             // pitch
+        angles.z = std::atan2(m.m[1][0], m.m[1][1]);  // roll
+        return angles;
+    }
+
 };

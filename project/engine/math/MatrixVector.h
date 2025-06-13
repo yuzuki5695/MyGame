@@ -57,4 +57,10 @@ namespace MatrixVector
 	Matrix4x4 MakeRotateMatrix(const Vector3& rotation);
 
 	Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m);
+
+	// 視点を向ける回転行列
+	Matrix4x4 MakeLookRotationMatrix(Vector3 eye, Vector3 target, Vector3 up);
+
+	// 回転行列からオイラー角を抽出
+	Vector3 ExtractEulerAngles(const Matrix4x4& m);
 };

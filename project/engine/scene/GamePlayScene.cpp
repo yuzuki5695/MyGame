@@ -127,19 +127,19 @@ void GamePlayScene::Update() {
         player_->Update();
     }
 
-    // 敵
-    for (auto& enemy : enemys_) {
-        if (enemy->IsActive()) {
-            enemy->Update();
-        }
-    }
+    //// 敵
+    //for (auto& enemy : enemys_) {
+    //    if (enemy->IsActive()) {
+    //        enemy->Update();
+    //    }
+    //}
 
-    CheckBulletEnemyCollisions();  // 当たり判定(プレイヤーの球と敵)
-    CheckPlayerEnemyCollisions();  // 当たり判定(プレイヤーと敵)
+    //CheckBulletEnemyCollisions();  // 当たり判定(プレイヤーの球と敵)
+    //CheckPlayerEnemyCollisions();  // 当たり判定(プレイヤーと敵)
 
 
 
-    CleanupInactiveObjects();      // 不要なオブジェクト削除
+    //CleanupInactiveObjects();      // 不要なオブジェクト削除
 
 
     map01_->Update();
@@ -171,12 +171,12 @@ void GamePlayScene::Draw() {
         player_->Draw();
     }
 
-    // 敵
-    for (auto& enemy : enemys_) {
-        if (enemy->IsActive()) {
-            enemy->Draw();
-        }
-    }
+    //// 敵
+    //for (auto& enemy : enemys_) {
+    //    if (enemy->IsActive()) {
+    //        enemy->Draw();
+    //    }
+    //}
 
 
 
