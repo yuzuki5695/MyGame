@@ -34,10 +34,10 @@ void Player::Initialize() {
 void Player::Update() {
     moveDelta = Vector3(0.0f, 0.0f, 0.0f);
     // キー入力でmoveDeltaに1フレーム分の移動量加算
-    //if (Input::GetInstance()->Pushkey(DIK_A)) moveDelta.x -= 0.1f;
-    //if (Input::GetInstance()->Pushkey(DIK_D)) moveDelta.x += 0.1f;
-    //if (Input::GetInstance()->Pushkey(DIK_W)) moveDelta.y += 0.1f;
-    //if (Input::GetInstance()->Pushkey(DIK_S)) moveDelta.y -= 0.1f;
+    if (Input::GetInstance()->Pushkey(DIK_A)) moveDelta.x -= 0.1f;
+    if (Input::GetInstance()->Pushkey(DIK_D)) moveDelta.x += 0.1f;
+    if (Input::GetInstance()->Pushkey(DIK_W)) moveDelta.y += 0.1f;
+    if (Input::GetInstance()->Pushkey(DIK_S)) moveDelta.y -= 0.1f;
 
     if (fige) {
         // ベジェ曲線の位置を取得
@@ -52,15 +52,15 @@ void Player::Update() {
         transform.translate = transform.translate + moveDelta;
     }
 
-    //// 弾の発射
-    //attachBullet();
+    // 弾の発射
+    attachBullet();
 
-    //// 弾の更新
-    //for (auto& b : bullets_) {
-    //    if (b->IsActive()) {
-    //        b->Update();
-    //    }
-    //}
+    // 弾の更新
+    for (auto& b : bullets_) {
+        if (b->IsActive()) {
+            b->Update();
+        }
+    }
 
     // 移動後の位置をObjectに反映
     object->SetTranslate(transform.translate);
@@ -186,10 +186,15 @@ Vector3 Player::UpdateObjectPosition() {
     }
 
     if (currentSegmentIndex + 1 >= points.size()) {
-        currentCurveIndex++;
+        //currentCurveIndex++;
+        //currentSegmentIndex = 0;
+        //t = 0.0f;
+        //return UpdateObjectPosition(); // 再帰で継続
+
+         currentCurveIndex++;
         currentSegmentIndex = 0;
         t = 0.0f;
-        return UpdateObjectPosition(); // 再帰で継続
+        return UpdateObjectPosition(); // 再帰で処理を継続
     }
 
     const auto& start = points[currentSegmentIndex];

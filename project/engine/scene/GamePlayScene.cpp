@@ -53,7 +53,10 @@ void GamePlayScene::Initialize() {
     // パーティクルグループ生成
     ParticleManager::GetInstance()->CreateParticleGroup("Particles", "Resources/uvChecker.png", "plane.obj", VertexType::Model);            // モデルで生成
     ParticleManager::GetInstance()->CreateParticleGroup("Circle", "Resources/circle2.png", "plane.obj", VertexType::Model);
-    ParticleManager::GetInstance()->CreateParticleGroup("Ring", "Resources/gradationLine.png", "plane.obj", VertexType::Ring);              // リングで生成
+    ParticleManager::GetInstance()->CreateParticleGroup("Ring", "Resources/gradationLine.png", "plane.obj", VertexType::Ring);              // リングで生成  
+    ParticleManager::GetInstance()->CreateParticleGroup("Cylinder", "Resources/gradationLine.png", "plane.obj", VertexType::Cylinder);      // 円柱で生成
+    
+    ParticleManager::GetInstance()->CreateParticleGroup("Sphere", "Resources/circle2.png", "monsterBallUV.obj", VertexType::Model); // 球
 
     // プレイヤーの初期化
     player_ = std::make_unique<Player>();
@@ -127,19 +130,19 @@ void GamePlayScene::Update() {
         player_->Update();
     }
 
-    //// 敵
-    //for (auto& enemy : enemys_) {
-    //    if (enemy->IsActive()) {
-    //        enemy->Update();
-    //    }
-    //}
+    // 敵
+    for (auto& enemy : enemys_) {
+        if (enemy->IsActive()) {
+            enemy->Update();
+        }
+    }
 
-    //CheckBulletEnemyCollisions();  // 当たり判定(プレイヤーの球と敵)
-    //CheckPlayerEnemyCollisions();  // 当たり判定(プレイヤーと敵)
+    CheckBulletEnemyCollisions();  // 当たり判定(プレイヤーの球と敵)
+    CheckPlayerEnemyCollisions();  // 当たり判定(プレイヤーと敵)
 
 
 
-    //CleanupInactiveObjects();      // 不要なオブジェクト削除
+    CleanupInactiveObjects();      // 不要なオブジェクト削除
 
 
     map01_->Update();
@@ -164,19 +167,19 @@ void GamePlayScene::Draw() {
     // 3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
     Object3dCommon::GetInstance()->Commondrawing();
     
-    map01_->Draw();
+    //map01_->Draw();
 
     // プレイヤー
     if (player_->IsActive()) {
         player_->Draw();
     }
 
-    //// 敵
-    //for (auto& enemy : enemys_) {
-    //    if (enemy->IsActive()) {
-    //        enemy->Draw();
-    //    }
-    //}
+    // 敵
+    for (auto& enemy : enemys_) {
+        if (enemy->IsActive()) {
+            enemy->Draw();
+        }
+    }
 
 
 
@@ -229,7 +232,7 @@ void GamePlayScene::CheckBulletEnemyCollisions() {
 
                 std::unique_ptr<ParticleEmitter> deathEffect = std::make_unique<ParticleEmitter>(
                     "Ring",                                                                              // パーティクルグループ名
-                    1,                                                                                     // 発生数
+                    4,                                                                                     // 発生数
                     particleTransform,                                                                     // サイズ,回転,位置
                     Vector4{ 1.0f,1.0f,1.0f,1.0f },                                                        // カラー
                     3.0f,                                                                                  // 発生周期 or 寿命（自由に定義可能）
