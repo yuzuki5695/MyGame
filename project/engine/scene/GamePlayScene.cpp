@@ -55,8 +55,6 @@ void GamePlayScene::Initialize() {
     ParticleManager::GetInstance()->CreateParticleGroup("Circle", "Resources/circle2.png", "plane.obj", VertexType::Model);
     ParticleManager::GetInstance()->CreateParticleGroup("Ring", "Resources/gradationLine.png", "plane.obj", VertexType::Ring);              // リングで生成
 
-
-
     // プレイヤーの初期化
     player_ = std::make_unique<Player>();
     player_->Initialize();
@@ -65,7 +63,7 @@ void GamePlayScene::Initialize() {
     CameraManager::GetInstance()->ToggleCameraMode(true);  // 追従カメラを有効にする
 
     // 敵を複数体生成
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 8; ++i) {
         auto enemy = std::make_unique<Enemy>();
         enemy->Initialize();
         enemys_.push_back(std::move(enemy));
@@ -123,10 +121,11 @@ void GamePlayScene::Update() {
     // 更新処理
     //object3d->Update();
     grass->Update();
-
-    // プレイヤー
-    player_->Update();
-
+    
+    if (player_->IsActive()) {
+        // プレイヤー
+        player_->Update();
+    }
 
     // 敵
     for (auto& enemy : enemys_) {
@@ -135,7 +134,11 @@ void GamePlayScene::Update() {
         }
     }
 
-    CheckBulletEnemyCollisions();  // 当たり判定
+    CheckBulletEnemyCollisions();  // 当たり判定(プレイヤーの球と敵)
+    CheckPlayerEnemyCollisions();  // 当たり判定(プレイヤーと敵)
+
+
+
     CleanupInactiveObjects();      // 不要なオブジェクト削除
 
 
@@ -164,7 +167,9 @@ void GamePlayScene::Draw() {
     map01_->Draw();
 
     // プレイヤー
-    player_->Draw();
+    if (player_->IsActive()) {
+        player_->Draw();
+    }
 
     // 敵
     for (auto& enemy : enemys_) {
@@ -264,4 +269,56 @@ void GamePlayScene::CleanupInactiveObjects() {
             return !e->IsActive(); // unique_ptr の所有権は move されるので delete は不要
         }), enemys_.end());
 
+}
+
+void GamePlayScene::CheckPlayerEnemyCollisions() {
+    const Vector3& playerPos = player_->GetObject3d()->GetTransform().translate;
+    float playerRadius = player_->GetObject3d()->GetTransform().scale.x * 0.5f; // 半径 = スケールの半分
+
+    for (const auto& enemy : enemys_) {
+        if (!enemy->IsActive()) continue;
+
+        const Vector3& enemyPos = enemy->GetPosition();
+        float enemyRadius = enemy->GetRadius();
+
+        Vector3 delta = {
+            playerPos.x - enemyPos.x,
+            playerPos.y - enemyPos.y,
+            playerPos.z - enemyPos.z
+        };
+        float dist = Length(delta);
+        float collisionDist = playerRadius + enemyRadius;
+
+        if (dist <= collisionDist) {
+            // 敵を無効化
+            enemy->SetInactive();
+
+            // プレイヤーを無効化 ← ここを追加！
+            player_->SetInactive();
+
+            // パーティクル発生
+            Transform particleTransform = {
+                {0.05f, 1.0f, 1.0f},
+                {0.0f, 0.0f, 0.0f},
+                {enemy->GetPosition().x, enemy->GetPosition().y + 2.0f, enemy->GetPosition().z}
+            };
+
+            std::unique_ptr<ParticleEmitter> hitEffect = std::make_unique<ParticleEmitter>(
+                "Circle",
+                8,
+                particleTransform,
+                Vector4{ 1.0f, 0.2f, 0.2f, 1.0f },
+                3.0f,
+                0.0f,
+                Velocity{ {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} },
+                random_
+            );
+
+            hitEffect->Emit();
+            particleEmitters_.push_back(std::move(hitEffect));
+
+            // break でループ終了（1体と当たったら終わる）
+            break;
+        }
+    }
 }

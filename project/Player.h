@@ -84,7 +84,7 @@ private:
 
 
 
-
+	bool isActive_ = true; // 初期状態ではアクティブ
 
 
 
@@ -117,4 +117,7 @@ public: // メンバ関数
 		return Vector3(0.0f, 0.0f, 1.0f);
 	}
 	std::vector<Bullet*>& GetBullet() { return bullets_; } // 非const版
+
+	bool IsActive() const { return isActive_; }
+	void SetInactive() { isActive_ = false; }
 };

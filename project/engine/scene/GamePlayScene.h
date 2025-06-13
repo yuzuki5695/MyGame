@@ -26,6 +26,8 @@ public: // メンバ関数
 
     void CheckBulletEnemyCollisions();
     void CleanupInactiveObjects();
+    
+    void CheckPlayerEnemyCollisions();
 
     inline float Length(const Vector3& v) {
         return std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);

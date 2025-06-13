@@ -52,6 +52,7 @@ void Player::Update() {
         transform.translate = transform.translate + moveDelta;
     }
 
+    // 弾の発射
     attachBullet();
 
     // 弾の更新
