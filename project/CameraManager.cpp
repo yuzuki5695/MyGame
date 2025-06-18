@@ -199,7 +199,6 @@ void CameraManager::SetActiveCamera() {
     }
 }
 
-
 std::vector<BezierPoint> CameraManager::LoadBezierFromJSON(const std::string& filePath) {
     std::vector<BezierPoint> points;
 
@@ -211,7 +210,12 @@ std::vector<BezierPoint> CameraManager::LoadBezierFromJSON(const std::string& fi
     json j;
     file >> j;
 
-    for (const auto& pointData : j) {
+    // "Curve" の最初のスプラインを使う
+    if (!j.contains("Curve") || !j["Curve"].is_array() || j["Curve"].empty()) {
+        throw std::runtime_error("Curveデータが存在しません");
+    }
+
+    for (const auto& pointData : j["Curve"][0]) {
         BezierPoint pt;
         pt.handleLeft = {
             pointData["handle_left"][0],
@@ -256,10 +260,10 @@ void CameraManager::UpdateObjectPosition() {
         const BezierPoint& end = bezierPoints[segmentIndex + 1];
          
         bezierPos_ = BezierInterpolate(
-           moveOffset_ + start.controlPoint,
-           moveOffset_ + start.handleRight,
-           moveOffset_ + end.handleLeft,
-            end.controlPoint,
+            moveOffset_ + start.controlPoint,
+            moveOffset_ + start.handleRight,
+            moveOffset_ + end.handleLeft,
+            moveOffset_ + end.controlPoint,
             t
         );
 

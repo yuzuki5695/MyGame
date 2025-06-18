@@ -28,9 +28,6 @@ public:
 private:
 	// Object3d
 	std::unique_ptr <Object3d> object = nullptr;
-	
-
-	bool fige = false;
 
 	Transform transform{};
 	Vector3 moveOffset;

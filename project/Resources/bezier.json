@@ -1,36 +1,44 @@
-[
-    {
-        "handle_left": [
-            0.0,
-            0.0,
-            0.0
-        ],
-        "control_point": [
-            0.0,
-            0.0,
-            0.0
-        ],
-        "handle_right": [
-            0.0,
-            0.0,
-            33.30
+{
+    "object_count": 1,
+    "object_names": [
+        "Curve"
+    ],
+    "Curve": [
+        [
+            {
+                "handle_left": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "control_point": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "handle_right": [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "handle_left": [
+                    0.0,
+                    0.0,
+                    100.0
+                ],
+                "control_point": [
+                    0.0,
+                    0.0,
+                    100.0
+                ],
+                "handle_right": [
+                    0.0,
+                    0.0,
+                    100.0
+                ]
+            }
         ]
-    },
-    {
-        "handle_left": [
-            0.0,
-            0.0,
-            66.0
-        ],
-        "control_point": [
-            0.0,
-            0.0,
-            100.0
-        ],
-        "handle_right": [
-            0.0,
-            0.0,
-            100.0
-        ]
-    }
-]
+    ]
+}

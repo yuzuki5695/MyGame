@@ -50,7 +50,6 @@ void Player::Update() {
 
 #ifdef USE_IMGUI
     ImGui::Begin("Player Control");
-    ImGui::Checkbox("Follow Bezier", &fige);
     ImGui::DragFloat3("Translate", &transform.translate.x, 0.01f);
     ImGui::DragFloat3("Rotate", &transform.rotate.x, 0.01f);
     ImGui::DragFloat3("Scale", &transform.scale.x, 0.01f);
