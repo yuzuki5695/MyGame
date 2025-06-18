@@ -101,7 +101,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="CameraManager.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="engine\3d\Particle\ParticleCommon.cpp" />
     <ClCompile Include="engine\3d\Particle\ParticleEmitter.cpp" />
     <ClCompile Include="engine\3d\Particle\ParticleManager.cpp" />
@@ -138,7 +140,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Player.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="CameraManager.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="engine\3d\Particle\ParticleCommon.h" />
     <ClInclude Include="engine\3d\Particle\ParticleEmitter.h" />
     <ClInclude Include="engine\3d\Particle\ParticleManager.h" />

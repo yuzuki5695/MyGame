@@ -40,7 +40,7 @@ void CameraManager::Initialize() {
 
     followCamera_ = new Camera();
     
-	moveOffset_ = { 0.0f, 6.0f, -30.0f }; // カメラの移動オフセット初期化
+	moveOffset_ = { 0.0f, 6.0f, -60.0f }; // カメラの移動オフセット初期化
     gamePlayCamera_ = new Camera();
     gamePlayCamera_->SetTranslate(moveOffset_);
     gamePlayCamera_->SetRotate({0, 0, 0});

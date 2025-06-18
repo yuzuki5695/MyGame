@@ -122,6 +122,8 @@
     </ClCompile>
     <ClCompile Include="CameraManager.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="Bullet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\scene\AbstractSceneFactory.h">
@@ -259,6 +261,8 @@
     <ClInclude Include="json.hpp" />
     <ClInclude Include="CameraManager.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Bullet.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Object3d.hlsli">
