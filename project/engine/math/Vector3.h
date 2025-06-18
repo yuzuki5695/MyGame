@@ -11,6 +11,11 @@ struct Vector3 final {
         return { x + other.x, y + other.y, z + other.z };
     }
 
+    // 引き算  
+    Vector3 operator-(const Vector3& other) const {
+        return { x - other.x, y - other.y, z - other.z };
+    }
+
     // 代入付き足し算
     Vector3& operator+=(const Vector3& other) {
         x += other.x;

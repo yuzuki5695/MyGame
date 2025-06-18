@@ -6,7 +6,6 @@
 #include<BaseScene.h>
 #include<ParticleEmitter.h>
 #include"Player.h"
-#include <CameraManager.h>
 
 // ゲームプレイシーン
 class GamePlayScene : public BaseScene
@@ -22,8 +21,6 @@ public: // メンバ関数
     void Draw() override;
 private: // メンバ変数
     // オブジェクトデータ
-    // camera 
-    std::unique_ptr <Camera> camera = nullptr;
     // 地面
     std::unique_ptr <Object3d> grass = nullptr;
 
@@ -33,5 +30,5 @@ private: // メンバ変数
     uint32_t soundfige;
 
 
-    std::unique_ptr <Player> player_;
+    std::unique_ptr <Player> player_;    
 };

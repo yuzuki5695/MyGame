@@ -11,6 +11,7 @@
 #include <ParticleCommon.h>
 #include <ParticleManager.h>
 #include <numbers>
+#include <CameraManager.h>
 
 void GamePlayScene::Finalize() {
 
@@ -19,13 +20,7 @@ void GamePlayScene::Finalize() {
 void GamePlayScene::Initialize() {
 
     // カメラの初期化
-    camera = std::make_unique<Camera>();
-    camera->SetTranslate(Vector3(0.0f, 0.0f, -30.0f));
-    camera->SetRotate(Vector3(0.0f, 0.0f, 0.0f));
-    Object3dCommon::GetInstance()->SetDefaultCamera(camera.get());
-    ParticleCommon::GetInstance()->SetDefaultCamera(camera.get());
-
-   CameraManager::GetInstance()->Initialize();
+    CameraManager::GetInstance()->Initialize();
 
     // テクスチャを読み込む
     TextureManager::GetInstance()->LoadTexture("Resources/uvChecker.png");
@@ -52,14 +47,10 @@ void GamePlayScene::Initialize() {
 
     // パーティクルグループ生成
     ParticleManager::GetInstance()->CreateParticleGroup("Particles", "Resources/uvChecker.png", "plane.obj", VertexType::Model);            // モデルで生成
-
+ 	
     // プレイヤーの初期化
-    player_ = std::make_unique<Player>();
-    player_->Initialize();
-    // プレイヤー初期化後にターゲット設定
-    CameraManager::GetInstance()->SetTarget(player_->GetObject3d());
-    CameraManager::GetInstance()->ToggleCameraMode(true);  // 追従カメラを有効にする
-
+	player_ = std::make_unique<Player>();
+    player_->Initialize(); 
 }
 
 void GamePlayScene::Update() {
@@ -68,9 +59,7 @@ void GamePlayScene::Update() {
     // object3d
 
     // Camera
-    camera->DebugUpdate();
-    
-    CameraManager::GetInstance()->DrawImGui();
+	CameraManager::GetInstance()->DrawImGui();
 
 #endif // USE_IMGUI
 #pragma endregion ImGuiの更新処理終了 
@@ -85,7 +74,7 @@ void GamePlayScene::Update() {
     //object3d->Update();
     grass->Update();
 
-    // プレイヤー
+        // プレイヤー
     player_->Update();
 
     ParticleManager::GetInstance()->Update();
@@ -108,12 +97,12 @@ void GamePlayScene::Draw() {
     // 3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
     Object3dCommon::GetInstance()->Commondrawing();
 
+    grass->Draw();
+    //object3d->Draw();
+    
     // プレイヤー
     player_->Draw();
 
-
-    grass->Draw();
-    //object3d->Draw();
 
     // パーティクルの描画準備。パーティクルの描画に共通のグラフィックスコマンドを積む 
     ParticleCommon::GetInstance()->Commondrawing();
