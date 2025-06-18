@@ -53,7 +53,7 @@ void GamePlayScene::Initialize() {
     player_->Initialize();
         
     // 敵を複数体生成
-    for (int i = 0; i < 12; ++i) {
+    for (int i = 0; i < 6; ++i) {
         auto enemy = std::make_unique<Enemy>();
         enemy->Initialize();
         enemys_.push_back(std::move(enemy));
@@ -77,23 +77,25 @@ void GamePlayScene::Update() {
 
 #pragma region 全てのObject3d個々の更新処理
 
-    // 更新処理
-    grass->Update();
-     
-    // プレイヤー 
-    player_->Update();
-    
-    // 敵
-    for (auto& enemy : enemys_) {
-        if (enemy->IsActive()) {
-            enemy->Update(player_->GetTransform().translate);
-        }
-    }
+        // 更新処理
+        grass->Update();
 
-    CheckBulletEnemyCollisions();  // 当たり判定(プレイヤーの球と敵)
-	CheckEnemyBulletPlayerCollisions(); // 当たり判定(プレイヤーと敵の弾)
-    CheckPlayerEnemyCollisions();  // 当たり判定(プレイヤーと敵)
-    CleanupInactiveObjects();      // 不要なオブジェクト削除
+        // プレイヤー 
+        player_->Update();
+
+        // 敵
+        for (auto& enemy : enemys_) {
+            if (enemy->IsActive()) {
+                enemy->Update(player_->GetTransform().translate);
+            }
+        }
+
+        if (CameraManager::GetInstance()->Getmovefige()) {
+            CheckBulletEnemyCollisions();  // 当たり判定(プレイヤーの球と敵)
+            CheckEnemyBulletPlayerCollisions(); // 当たり判定(プレイヤーと敵の弾)
+            CheckPlayerEnemyCollisions();  // 当たり判定(プレイヤーと敵)
+            CleanupInactiveObjects();      // 不要なオブジェクト削除
+        }
 
     ParticleManager::GetInstance()->Update();
 

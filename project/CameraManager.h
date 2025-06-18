@@ -72,6 +72,7 @@ public: // メンバ関数
     void SetTarget(Object3d* target);
 	Camera* GetFollowCamera() { return followCamera_; } // 追従カメラ取得
     Camera* GetActiveCamera();
+	bool Getmovefige() { return movefige; } // ベジェ曲線に沿って移動するかどうか
 
     void SetCameraMode(CameraMode mode);
 
