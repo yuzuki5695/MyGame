@@ -53,7 +53,9 @@ void Framework::Initialize() {
     // ウィンドウ作成
     // WindowsAPIの初期化
     winApp = std::make_unique <WinApp>();
-    winApp->Initialize();
+    winApp->Initialize(); 	
+    // ウィンドウのタイトルを変更
+	winApp->SetWindowTitle(L"LE3B_MyGame");
     // DirectXの初期化
     dxCommon = std::make_unique <DirectXCommon>();
     dxCommon->Initialize(winApp.get());

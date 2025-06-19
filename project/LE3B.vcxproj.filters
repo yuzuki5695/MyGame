@@ -57,9 +57,6 @@
     <ClCompile Include="engine\math\MatrixVector.cpp">
       <Filter>ソースファイル\engine\math</Filter>
     </ClCompile>
-    <ClCompile Include="engine\scene\GamePlayScene.cpp">
-      <Filter>ソースファイル\engine\scene</Filter>
-    </ClCompile>
     <ClCompile Include="engine\3d\ModelManager.cpp">
       <Filter>ソースファイル\engine\3d</Filter>
     </ClCompile>
@@ -99,9 +96,6 @@
     <ClCompile Include="engine\base\StringUtility.cpp">
       <Filter>ソースファイル\engine\base</Filter>
     </ClCompile>
-    <ClCompile Include="engine\scene\TitleScene.cpp">
-      <Filter>ソースファイル\engine\scene</Filter>
-    </ClCompile>
     <ClCompile Include="engine\base\WinApp.cpp">
       <Filter>ソースファイル\engine\base</Filter>
     </ClCompile>
@@ -121,9 +115,19 @@
       <Filter>ソースファイル\engine\math</Filter>
     </ClCompile>
     <ClCompile Include="CameraManager.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="application\Player\Player.cpp">
+      <Filter>ソースファイル\application\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="application\Enemy\Enemy.cpp">
+      <Filter>ソースファイル\application\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="application\scene\TitleScene.cpp">
+      <Filter>ソースファイル\application\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="application\scene\GamePlayScene.cpp">
+      <Filter>ソースファイル\application\scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\scene\AbstractSceneFactory.h">
@@ -143,9 +147,6 @@
     </ClInclude>
     <ClInclude Include="engine\base\Framework.h">
       <Filter>ヘッダーファイル\engine\base</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\scene\GamePlayScene.h">
-      <Filter>ヘッダーファイル\engine\scene</Filter>
     </ClInclude>
     <ClInclude Include="engine\base\ImGuiManager.h">
       <Filter>ヘッダーファイル\engine\base</Filter>
@@ -213,9 +214,6 @@
     <ClInclude Include="engine\2d\TextureManager.h">
       <Filter>ヘッダーファイル\engine\2d</Filter>
     </ClInclude>
-    <ClInclude Include="engine\scene\TitleScene.h">
-      <Filter>ヘッダーファイル\engine\scene</Filter>
-    </ClInclude>
     <ClInclude Include="engine\math\Vector2.h">
       <Filter>ヘッダーファイル\engine\math</Filter>
     </ClInclude>
@@ -226,9 +224,6 @@
       <Filter>ヘッダーファイル\engine\math</Filter>
     </ClInclude>
     <ClInclude Include="engine\math\Vector4.h">
-      <Filter>ヘッダーファイル\engine\math</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\base\WinApp.h">
       <Filter>ヘッダーファイル\engine\math</Filter>
     </ClInclude>
     <ClInclude Include="engine\3d\Particle\ParticleModel.h">
@@ -260,9 +255,22 @@
     </ClInclude>
     <ClInclude Include="json.hpp" />
     <ClInclude Include="CameraManager.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="Enemy.h" />
     <ClInclude Include="Bullet.h" />
+    <ClInclude Include="application\Player\Player.h">
+      <Filter>ヘッダーファイル\application\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="application\Enemy\Enemy.h">
+      <Filter>ヘッダーファイル\application\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="application\scene\TitleScene.h">
+      <Filter>ヘッダーファイル\application\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="application\scene\GamePlayScene.h">
+      <Filter>ヘッダーファイル\application\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\base\WinApp.h">
+      <Filter>ヘッダーファイル\engine\base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Object3d.hlsli">
@@ -350,6 +358,18 @@
     </Filter>
     <Filter Include="ヘッダーファイル\application\Player">
       <UniqueIdentifier>{87e59460-8b3d-49aa-8efb-a3fadc35f9d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\application\Enemy">
+      <UniqueIdentifier>{d6187eee-1f82-44b0-8497-f0eb616af7de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\application\Enemy">
+      <UniqueIdentifier>{8744ec6c-ee45-4ab5-a0ad-9458e3255bc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\application\scene">
+      <UniqueIdentifier>{33a9e89d-08cc-45a9-9735-28218b73ad14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\application\scene">
+      <UniqueIdentifier>{30e3b2a8-8e44-4aee-9919-8eb3a54d737a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
