@@ -1,7 +1,9 @@
 #include "DirectXCommon.h"
 #include<cassert>
 #include<format>
-#include <thread> 
+#include <thread>
+#include "Logger.h"
+#include "StringUtility.h"
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")
 
