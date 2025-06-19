@@ -52,10 +52,10 @@ void Framework::Initialize() {
     OutputDebugStringA("Hello,Directx!\n");
     // ウィンドウ作成
     // WindowsAPIの初期化
-    winApp = std::make_unique <WinApp>();
-    winApp->Initialize(); 	
+    winApp = std::make_unique <WinApp>();    
     // ウィンドウのタイトルを変更
 	winApp->SetWindowTitle(L"LE3B_MyGame");
+    winApp->Initialize();
     // DirectXの初期化
     dxCommon = std::make_unique <DirectXCommon>();
     dxCommon->Initialize(winApp.get());
