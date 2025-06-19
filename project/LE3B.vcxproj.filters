@@ -254,7 +254,6 @@
     <ClInclude Include="engine\math\Vertex.h">
       <Filter>ヘッダーファイル\engine\math</Filter>
     </ClInclude>
-    <ClInclude Include="json.hpp" />
     <ClInclude Include="application\Player\Player.h">
       <Filter>ヘッダーファイル\application\Player</Filter>
     </ClInclude>
