@@ -30,9 +30,6 @@
     <ClCompile Include="engine\3d\ModelCommon.cpp">
       <Filter>ソースファイル\engine\3d</Filter>
     </ClCompile>
-    <ClCompile Include="engine\base\Camera.cpp">
-      <Filter>ソースファイル\engine\base</Filter>
-    </ClCompile>
     <ClCompile Include="engine\base\D3DResourceLeakChecker.cpp">
       <Filter>ソースファイル\engine\base</Filter>
     </ClCompile>
@@ -114,8 +111,6 @@
     <ClCompile Include="engine\math\PrimitiveGenerator.cpp">
       <Filter>ソースファイル\engine\math</Filter>
     </ClCompile>
-    <ClCompile Include="CameraManager.cpp" />
-    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="application\Player\Player.cpp">
       <Filter>ソースファイル\application\Player</Filter>
     </ClCompile>
@@ -128,6 +123,15 @@
     <ClCompile Include="application\scene\GamePlayScene.cpp">
       <Filter>ソースファイル\application\scene</Filter>
     </ClCompile>
+    <ClCompile Include="application\Bullet\Bullet.cpp">
+      <Filter>ソースファイル\application\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\camera\CameraManager.cpp">
+      <Filter>ソースファイル\engine\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\base\Camera.cpp">
+      <Filter>ソースファイル\engine\camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\scene\AbstractSceneFactory.h">
@@ -135,9 +139,6 @@
     </ClInclude>
     <ClInclude Include="engine\scene\BaseScene.h">
       <Filter>ヘッダーファイル\engine\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\base\Camera.h">
-      <Filter>ヘッダーファイル\engine\base</Filter>
     </ClInclude>
     <ClInclude Include="engine\base\D3DResourceLeakChecker.h">
       <Filter>ヘッダーファイル\engine\base</Filter>
@@ -254,8 +255,6 @@
       <Filter>ヘッダーファイル\engine\math</Filter>
     </ClInclude>
     <ClInclude Include="json.hpp" />
-    <ClInclude Include="CameraManager.h" />
-    <ClInclude Include="Bullet.h" />
     <ClInclude Include="application\Player\Player.h">
       <Filter>ヘッダーファイル\application\Player</Filter>
     </ClInclude>
@@ -270,6 +269,15 @@
     </ClInclude>
     <ClInclude Include="engine\base\WinApp.h">
       <Filter>ヘッダーファイル\engine\base</Filter>
+    </ClInclude>
+    <ClInclude Include="application\Bullet\Bullet.h">
+      <Filter>ヘッダーファイル\application\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\camera\CameraManager.h">
+      <Filter>ヘッダーファイル\engine\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\base\Camera.h">
+      <Filter>ヘッダーファイル\engine\camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -370,6 +378,18 @@
     </Filter>
     <Filter Include="ヘッダーファイル\application\scene">
       <UniqueIdentifier>{30e3b2a8-8e44-4aee-9919-8eb3a54d737a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\application\Bullet">
+      <UniqueIdentifier>{e63a468b-0386-4a1f-8785-0ab4ebfd2efa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\application\Bullet">
+      <UniqueIdentifier>{017359ee-8e38-41c8-b7ad-486ac9bd420e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\engine\camera">
+      <UniqueIdentifier>{3c99fa70-f450-4ff7-acd4-0820cc3d3020}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\engine\camera">
+      <UniqueIdentifier>{bb688edd-3901-4608-875d-0ab16c0351c6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
